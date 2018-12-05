@@ -4,7 +4,6 @@ var projection = new ol.proj.Projection({
     axisOrientation: 'neu'
 });
 
-
 var formatWFS = new ol.format.WFS();
 
 var formatGML = new ol.format.GML({
@@ -12,7 +11,6 @@ var formatGML = new ol.format.GML({
     featureType: 'wfs_geom',
     srsName: 'EPSG:3857'
 });
-
 
 var xs = new XMLSerializer();
 
@@ -46,31 +44,10 @@ var interactionSelect = new ol.interaction.Select({
 var interactionSnap = new ol.interaction.Snap({
     source: layerWFS.getSource()
 });
+//the scaleline
+var scaleLineControl = new ol.control.ScaleLine();
 
-// var map = new ol.Map({
-//     target: 'map',
-//     controls: [],
-//     interactions: [
-//         interactionSelectPointerMove,
-//         new ol.interaction.MouseWheelZoom(),
-//         new ol.interaction.DragPan()
-//     ],
-//     layers: [
-//         raster,
-//         layerWFS
-//     ],
-//     view: new ol.View({
-//         projection: projection,
-//         center: ol.proj.transform([14.80, 40.80], 'EPSG:4326', 'EPSG:3857'),
-//         maxZoom: 19,
-//         zoom: 9
-//     })
-// });
-
-//wfs-t
-
-
-//----------------------------------------------------
+// the projection
 var pixelProjection = new ol.proj.Projection({
     code: 'pixel',
     units: 'pixels',
@@ -78,12 +55,19 @@ var pixelProjection = new ol.proj.Projection({
 });
 //the map : 2 layers , Batna map and layerWFS
 var map = new ol.Map({
+    controls: ol.control.defaults({
+        attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+            collapsible: false
+        })
+    }).extend([
+        scaleLineControl
+    ]),
     layers: [
         new ol.layer.Image({
             source: new ol.source.ImageStatic({
                 attributions: [
                     new ol.Attribution({
-                        html: '&copy; <a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
+                        html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
                     })
                 ],
                 url: './data/Dz_Batna_map.png',
@@ -101,6 +85,7 @@ var map = new ol.Map({
         zoom: 2
     })
 });
+
 //---------------------------------------
 
 var util = {};
@@ -223,4 +208,15 @@ $('button').click(function () {
         var newResolution = view.constrainResolution(view.getResolution(), -1);
         view.setResolution(newResolution);
     });
-
+//Display the coordinates :
+var mouse_position = new ol.control.MousePosition({
+    coordinateFormat: ol.coordinate.createStringXY(4),
+    projection: 'EPSG:4326'
+});
+map.addControl(mouse_position);
+//Display the scale :
+var unitsSelect = $('#units');
+unitsSelect.on('change', function() {
+    scaleLineControl.setUnits(this.value);
+});
+unitsSelect.val(scaleLineControl.getUnits());
