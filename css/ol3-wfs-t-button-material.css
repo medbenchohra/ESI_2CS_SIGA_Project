@@ -1,0 +1,37 @@
+#btnPoint {
+    position: absolute;
+    top: 10px;
+    left: 140px;
+}
+
+#btnLine {
+    position: absolute;
+    top: 10px;
+    left: 200px;
+}
+
+#btnArea {
+    position: absolute;
+    top: 10px;
+    left: 260px;
+}
+
+#btnEdit {
+    position: absolute;
+    top: 10px;
+    left: 320px;
+}
+
+#btnDelete {
+    position: absolute;
+    top: 10px;
+    left: 380px;
+}
+.btn-active {
+    background-color: #38adc7 !important;
+}
+.olControlScale{
+    top: 5em !important;
+    left: 0em !important;
+}
+
