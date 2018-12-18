@@ -227,6 +227,7 @@ function createMap(link) {
 //createMap();
 ////////////////////////////////////
 var $$ = document.querySelector.bind(document);
+document.getElementById("btnPoint").classList.add("hidden");
 //APP
 var App = {};
 App.init = function () {
