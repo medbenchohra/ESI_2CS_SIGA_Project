@@ -1,3 +1,4 @@
-./idea/*
+.idea/*
 ./node_modules/*
-./package-lo*
+package-lock.json
+./data/online_communities.png
