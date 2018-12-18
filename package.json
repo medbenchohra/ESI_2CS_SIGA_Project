@@ -1,13 +1,13 @@
 {
-  "name": "my-try",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "name": "SIG tools",
+  "version": "3.2.3",
+  "description": "SIG tools",
+  "main": "electron.main.js",
   "scripts": {
     "start": "electron ."
   },
   "author": "frlm",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "electron": "^3.0.13",
     "image-size": "^0.6.3",
