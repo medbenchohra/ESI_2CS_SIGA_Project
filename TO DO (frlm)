@@ -1,0 +1,18 @@
+
+
+TODO:
+=========frlm :===================================
+1 Import module             ✓
+2 Entity classes            ✓
+3 Vectorization tools       ✓
+4 clean the code !!!!!!     x
+5 Electron                  ✓
+
+Progress : 80%
+
+cmd:
+
+$ sudo npm i -g --save electron --allow-root
+$ sudo npm i -g --save ol
+$ sudo npm i -g --save image-size
+ ==================================================

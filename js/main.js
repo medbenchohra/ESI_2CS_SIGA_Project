@@ -1,14 +1,8 @@
 function createMap(link, w, h) {
-    var projection = new ol.proj.Projection({
-        code: 'EPSG:3857',
-        units: 'm',
-        axisOrientation: 'neu'
-    });
-
     var formatWFS = new ol.format.WFS();
 
     var formatGML = new ol.format.GML({
-        featureNS: 'http://geocatalogue.databenc.it/geoserver/chis_test',
+        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
         featureType: 'wfs_geom',
         srsName: 'EPSG:3857'
     });
@@ -16,24 +10,36 @@ function createMap(link, w, h) {
     var xs = new XMLSerializer();
 
     var sourceWFS = new ol.source.Vector({
-        format: new ol.format.GeoJSON(),
-        url: function (extent) {
-            return 'http://geocatalogue.databenc.it/geoserver/chis_test/ows?service=WFS&' +
-                'version=1.1.0&request=GetFeature&typename=chis_test:wfs_geom&' +
-                'outputFormat=application/json&srsname=EPSG:3857&' +
-                'bbox=' + extent.join(',') + ',EPSG:3857';
+        loader: function (extent) {
+            $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+                type: 'GET',
+                data: {
+                    service: 'WFS',
+                    version: '1.1.0',
+                    request: 'GetFeature',
+                    typename: 'wfs_geom',
+                    srsname: 'EPSG:3857',
+                    bbox: extent.join(',') + ',EPSG:3857'
+                }
+            }).done(function (response) {
+                sourceWFS.addFeatures(formatWFS.readFeatures(response));
+            });
         },
+        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
         strategy: ol.loadingstrategy.bbox,
-        projection: projection
+        projection: 'EPSG:3857'
     });
 
     var layerWFS = new ol.layer.Vector({
         source: sourceWFS
     });
+
     var interaction;
+
     var interactionSelectPointerMove = new ol.interaction.Select({
         condition: ol.events.condition.pointerMove
     });
+
     var interactionSelect = new ol.interaction.Select({
         style: new ol.style.Style({
             stroke: new ol.style.Stroke({
@@ -45,16 +51,12 @@ function createMap(link, w, h) {
     var interactionSnap = new ol.interaction.Snap({
         source: layerWFS.getSource()
     });
-//the scaleline
     var scaleLineControl = new ol.control.ScaleLine();
-
-// the projection
     var pixelProjection = new ol.proj.Projection({
         code: 'pixel',
         units: 'pixels',
-        extent: [0, 0, 1280, 930]
+        extent: [0, 0, w, h]
     });
-//the map : 2 layers , Batna map and layerWFS
     var map = new ol.Map({
         controls: ol.control.defaults({
             attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
@@ -87,8 +89,7 @@ function createMap(link, w, h) {
         })
     });
 
-//---------------------------------------
-
+//wfs-t
     var util = {};
     var transactWFS = function (mode, f) {
         var node;
@@ -104,7 +105,7 @@ function createMap(link, w, h) {
                 break;
         }
         var payload = xs.serializeToString(node);
-        $.ajax('http://geocatalogue.databenc.it/geoserver/chis_test/ows', {
+        $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
             type: 'POST',
             dataType: 'xml',
             processData: false,
@@ -115,15 +116,15 @@ function createMap(link, w, h) {
         });
     };
 
-// Buttons : OnClick Actions
-
     $('button').click(function () {
         $(this).siblings().removeClass('btn-active');
         $(this).addClass('btn-active');
         map.removeInteraction(interaction);
         interactionSelect.getFeatures().clear();
         map.removeInteraction(interactionSelect);
+
         switch ($(this).attr('id')) {
+
             case 'btnEdit':
                 map.addInteraction(interactionSelect);
                 interaction = new ol.interaction.Modify({
@@ -149,6 +150,7 @@ function createMap(link, w, h) {
                     }
                 });
                 break;
+
             case 'btnPoint':
                 interaction = new ol.interaction.Draw({
                     type: 'Point',
@@ -196,43 +198,22 @@ function createMap(link, w, h) {
                 break;
         }
     });
-
-//onClick actions :
-
-    $('#btnZoomIn').on('click', function () {
-        var view = map.getView();
-        var newResolution = view.constrainResolution(view.getResolution(), 1);
-        view.setResolution(newResolution);
-    });
-
-    $('#btnZoomOut').on('click', function () {
-        var view = map.getView();
-        var newResolution = view.constrainResolution(view.getResolution(), -1);
-        view.setResolution(newResolution);
-    });
 //Display the coordinates :
     var mouse_position = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
     map.addControl(mouse_position);
-//Display the scale :
-    var unitsSelect = $('#units');
-    unitsSelect.on('change', function () {
-        scaleLineControl.setUnits(this.value);
-    });
-    unitsSelect.val(scaleLineControl.getUnits());
 }
-createMap('./data/Dz_Batna_map.png',1280,930);
+
+//createMap('./data/Dz_Batna_map.png', 1280, 930);
+
 //----------------------------------------------------------//
 
 var $$ = document.querySelector.bind(document);
-// document.getElementById("btnPoint").classList.add("hidden");
+
 //APP
 var App = {};
-let h="global" ;
-let w="global";
-
 App.init = function () {
     //Init
     function handleFileSelect(evt) {
@@ -250,29 +231,29 @@ App.init = function () {
         setTimeout(function () {
             $$(".list-files").innerHTML = template;
         }, 1000);
+
         Object.keys(files).forEach(function (file) {
-            var load = 1000 + file * 1000; // fake load
+            var load = 2000 + file * 2000; // fake load
             setTimeout(function () {
                 $$(".file--" + file).querySelector(".progress").classList.remove("active");
                 $$(".file--" + file).querySelector(".done").classList.add("anim");
             }, load);
         });
-        var img = files[0];
-        var sizeOf = require('image-size');
-        sizeOf(img.path, function (err, dimensions) {
-            try {
-                if (!err) {
-                    h = dimensions.height;
-                    w = dimensions.width;
-                    createMap(img.path, w, h);
-                }
-            } catch (ex) {
-                console.log("image dimensions !!! ");
-            }
-        });
-        // console.log(w,h);
-        // createMap(img.path, w, h);
+        // document.getElementById("map-wrapper").classList.add("hidden");
+        img = files[0];
+        // var sizeOf = require('image-size');
+        // sizeOf(img.path, function (err, dimensions) {
+        //     try {
+        //         createMap(img.path, dimensions.width, dimensions.height);
+        //         console.log("creating the map");
+        //         console.log(dimensions.height, dimensions.width);
+        //     } catch (ex) {
+        //         console.log("image dimensions !!");
+        //     }
+        // });
+        //console.log(img);
         //or however you get a handle to the IMG
+
     }
 
     // trigger input
@@ -296,22 +277,32 @@ App.init = function () {
         $$("#drop").classList.remove("active");
         evt.preventDefault();
     };
+
     //upload more
     $$(".importar").addEventListener("click", function () {
-        // createMap('./data/Dz_Batna_map.png');
-        document.getElementById("upload-img").classList.add("hidden");
-        // document.getElementById("map-wrapper").classList.remove("hidden");
         $$(".list-files").innerHTML = "";
         $$("footer").classList.remove("hasFiles");
         $$(".importar").classList.remove("active");
         setTimeout(function () {
             $$("#drop").classList.remove("hidden");
         }, 500);
+
+        document.getElementById("upload-img").classList.add("hidden");
+        document.getElementById("map-wrapper").classList.remove("hidden");
+        var sizeOf = require('image-size');
+        sizeOf(img.path, function (err, dimensions) {
+            try {
+                createMap(img.path, dimensions.width, dimensions.height);
+                console.log("creating the map");
+                console.log(dimensions.height, dimensions.width);
+            } catch (ex) {
+                console.log("image dimensions !!");
+            }
+        });
+
     });
 
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
-};
-
-
+}();
 
