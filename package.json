@@ -9,6 +9,8 @@
   "author": "frlm",
   "license": "ISC",
   "dependencies": {
-    "electron": "^3.0.13"
+    "electron": "^3.0.13",
+    "image-size": "^0.6.3",
+    "jquery": "^3.3.1"
   }
 }

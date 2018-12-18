@@ -1,4 +1,4 @@
-function createMap(link) {
+function createMap(link, w, h) {
     var projection = new ol.proj.Projection({
         code: 'EPSG:3857',
         units: 'm',
@@ -26,6 +26,7 @@ function createMap(link) {
         strategy: ol.loadingstrategy.bbox,
         projection: projection
     });
+
     var layerWFS = new ol.layer.Vector({
         source: sourceWFS
     });
@@ -53,7 +54,6 @@ function createMap(link) {
         units: 'pixels',
         extent: [0, 0, 1280, 930]
     });
-
 //the map : 2 layers , Batna map and layerWFS
     var map = new ol.Map({
         controls: ol.control.defaults({
@@ -72,8 +72,7 @@ function createMap(link) {
                         })
                     ],
                     url: link,
-                    // url: './data/Dz_Batna_map.png',
-                    imageSize: [1280, 930],
+                    imageSize: [w, h],
                     projection: pixelProjection,
                     imageExtent: pixelProjection.getExtent()
                 })
@@ -115,6 +114,7 @@ function createMap(link) {
             sourceWFS.clear();
         });
     };
+
 // Buttons : OnClick Actions
 
     $('button').click(function () {
@@ -223,13 +223,16 @@ function createMap(link) {
     });
     unitsSelect.val(scaleLineControl.getUnits());
 }
+createMap('./data/Dz_Batna_map.png',1280,930);
+//----------------------------------------------------------//
 
-//createMap();
-////////////////////////////////////
 var $$ = document.querySelector.bind(document);
-document.getElementById("btnPoint").classList.add("hidden");
+// document.getElementById("btnPoint").classList.add("hidden");
 //APP
 var App = {};
+let h="global" ;
+let w="global";
+
 App.init = function () {
     //Init
     function handleFileSelect(evt) {
@@ -247,7 +250,6 @@ App.init = function () {
         setTimeout(function () {
             $$(".list-files").innerHTML = template;
         }, 1000);
-
         Object.keys(files).forEach(function (file) {
             var load = 1000 + file * 1000; // fake load
             setTimeout(function () {
@@ -256,8 +258,20 @@ App.init = function () {
             }, load);
         });
         var img = files[0];
-        // createMap();
-        //console.log(img);
+        var sizeOf = require('image-size');
+        sizeOf(img.path, function (err, dimensions) {
+            try {
+                if (!err) {
+                    h = dimensions.height;
+                    w = dimensions.width;
+                    createMap(img.path, w, h);
+                }
+            } catch (ex) {
+                console.log("image dimensions !!! ");
+            }
+        });
+        // console.log(w,h);
+        // createMap(img.path, w, h);
         //or however you get a handle to the IMG
     }
 
@@ -284,9 +298,9 @@ App.init = function () {
     };
     //upload more
     $$(".importar").addEventListener("click", function () {
-        createMap('./data/Dz_Batna_map.png');
+        // createMap('./data/Dz_Batna_map.png');
         document.getElementById("upload-img").classList.add("hidden");
-        document.getElementById("map-wrapper").classList.remove("hidden");
+        // document.getElementById("map-wrapper").classList.remove("hidden");
         $$(".list-files").innerHTML = "";
         $$("footer").classList.remove("hasFiles");
         $$(".importar").classList.remove("active");
@@ -297,7 +311,7 @@ App.init = function () {
 
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
-}();
+};
 
 
 

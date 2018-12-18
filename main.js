@@ -6,6 +6,7 @@ let mainwindow;
 
 app.on('ready', function () {
     mainwindow = new BrowserWindow({});
+    mainwindow.$ = mainwindow.jQuery = require('jquery');
     mainwindow.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
