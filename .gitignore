@@ -3,3 +3,4 @@
 node_modules/electron/*
 package-lock.json
 ./data/online_communities.png
+node_modules/
