@@ -1,13 +1,21 @@
 {
-  "name": "SIG tools",
-  "version": "3.2.3",
-  "description": "SIG tools",
+  "name": "my-try",
+  "version": "1.0.0",
+  "description": "",
   "main": "electron.main.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "frlm",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MahamdiAmine/SIG-tools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MahamdiAmine/SIG-tools/issues"
+  },
+  "homepage": "https://github.com/MahamdiAmine/SIG-tools#readme",
   "dependencies": {
     "electron": "^3.0.13",
     "image-size": "^0.6.3",
