@@ -57,6 +57,20 @@ function createMap(link, w, h) {
         units: 'pixels',
         extent: [0, 0, w, h]
     });
+    var mylayer = new ol.layer.Image({
+        source: new ol.source.ImageStatic({
+            attributions: [
+                new ol.Attribution({
+                    html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
+                })
+            ],
+            url: link,
+            imageSize: [w, h],
+            projection: pixelProjection,
+            imageExtent: pixelProjection.getExtent()
+        })
+    });
+
     var map = new ol.Map({
         controls: ol.control.defaults({
             attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
@@ -66,19 +80,7 @@ function createMap(link, w, h) {
             scaleLineControl
         ]),
         layers: [
-            new ol.layer.Image({
-                source: new ol.source.ImageStatic({
-                    attributions: [
-                        new ol.Attribution({
-                            html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
-                        })
-                    ],
-                    url: link,
-                    imageSize: [w, h],
-                    projection: pixelProjection,
-                    imageExtent: pixelProjection.getExtent()
-                })
-            }),
+            mylayer,
             layerWFS],
 
         target: 'map',
@@ -150,7 +152,6 @@ function createMap(link, w, h) {
                     }
                 });
                 break;
-
             case 'btnPoint':
                 interaction = new ol.interaction.Draw({
                     type: 'Point',
@@ -193,7 +194,16 @@ function createMap(link, w, h) {
                 });
                 map.addInteraction(interaction);
                 break;
-
+            case 'btnDeleteAll':
+                // interaction = new ol.interaction.Select();
+                // interaction.getFeatures().on('add', function (e) {
+                //     transactWFS('delete', e.target.item(0));
+                //     interactionSelectPointerMove.getFeatures().clear();
+                //     interaction.getFeatures().clear();
+                // });
+                map.getFeatures().clear();
+                // map.addInteraction(interaction);
+                break;
             default:
                 break;
         }
@@ -203,7 +213,84 @@ function createMap(link, w, h) {
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
+    var radius = 5000;//the distance of the buffer
+    map.on('click', function (e) {
+        var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+            //if feature is in the layer you want
+            return feature;
+        });
+        if (feat != null) {
+            var point = feat.getGeometry().getCoordinates();
+
+            if (feat.getGeometry().getType() === 'Polygon') {
+                console.log("polygon:", point);
+            } else if (feat.getGeometry().getType() === 'Point') {
+                console.log("Point:", point);
+            } else if (feat.getGeometry().getType() === 'LineString') {
+                console.log("LineString:", point);
+            } else
+                console.log("what's this!!!");
+        }
+    });
+    // var polyFeatures = mylayer.getSource();
+    //
+    // var coordsMulti = [];
+    // var coordsSingle = [];
+    // // polyFeatures.forEachFeature(function (polyFeature) {
+    // //     console.log("1");
+    //     // if (polyFeatures[0].getGeometry().getType() === 'Polygon') {
+    //         // this will get you all polygon coordinates
+    //         console.log("222");
+    //         coordsMulti.push(polyFeatures.getGeometry().getCoordinates());
+    //
+    //         // this will get you central coordinate of polygon
+    //         coordsSingle.push(polyFeatures[0].getGeometry().getInteriorPoint());
+    //         console.log(coordsMulti,coordsSingle);
+    //     // }
+    // // });
+
     map.addControl(mouse_position);
+    {
+        // new code
+
+        var measurementRadios = $('[type=radio]');
+        var resultElement = $('#js-result');
+        var measuringTool;
+
+        var enableMeasuringTool = function () {
+            map.removeInteraction(measuringTool);
+            var geometryType = measurementRadios.filter(':checked').val();
+            var html = geometryType === 'Polygon' ? '<sup>2</sup>' : '';
+
+            measuringTool = new ol.interaction.Draw({
+                type: geometryType,
+                source: vectorLayer.getSource()
+            });
+
+            measuringTool.on('drawstart', function (event) {
+                vectorLayer.getSource().clear();
+
+                event.feature.on('change', function (event) {
+                    var measurement = geometryType === 'Polygon' ?
+                        event.target.getGeometry().getArea() : event.target.getGeometry().getLength();
+
+                    var measurementFormatted = measurement > 100 ? (measurement / 1000).toFixed(2) +
+                        'km' : measurement.toFixed(2) + 'm';
+
+                    resultElement.html(measurementFormatted + html);
+                });
+            });
+
+            map.addInteraction(measuringTool);
+        }
+    }
+    ;
+    ///
+
+    measurementRadios.on('change', enableMeasuringTool);
+
+    enableMeasuringTool();
+
 }
 
 //createMap('./data/Dz_Batna_map.png', 1280, 930);
