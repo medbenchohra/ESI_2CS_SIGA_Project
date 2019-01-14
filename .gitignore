@@ -1,6 +1,4 @@
-.idea/*
-./node_modules/*
-node_modules/electron/*
+.idea/
+node_modules/
 package-lock.json
 ./data/online_communities.png
-node_modules/

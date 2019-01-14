@@ -23,13 +23,14 @@ function createMap(link, w, h) {
                 }
             }).done(function (response) {
                 sourceWFS.addFeatures(formatWFS.readFeatures(response));
+                // sourceWFS.clear();
             });
         },
         //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
         strategy: ol.loadingstrategy.bbox,
         projection: 'EPSG:3857'
     });
-
+    sourceWFS.clear();
     var layerWFS = new ol.layer.Vector({
         source: sourceWFS
     });
@@ -57,18 +58,19 @@ function createMap(link, w, h) {
         units: 'pixels',
         extent: [0, 0, w, h]
     });
+    var mysource = new ol.source.ImageStatic({
+        attributions: [
+            new ol.Attribution({
+                html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
+            })
+        ],
+        url: link,
+        imageSize: [w, h],
+        projection: pixelProjection,
+        imageExtent: pixelProjection.getExtent()
+    });
     var mylayer = new ol.layer.Image({
-        source: new ol.source.ImageStatic({
-            attributions: [
-                new ol.Attribution({
-                    html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
-                })
-            ],
-            url: link,
-            imageSize: [w, h],
-            projection: pixelProjection,
-            imageExtent: pixelProjection.getExtent()
-        })
+        source: mysource
     });
 
     var map = new ol.Map({
@@ -119,100 +121,113 @@ function createMap(link, w, h) {
     };
 
     $('button').click(function () {
-        $(this).siblings().removeClass('btn-active');
-        $(this).addClass('btn-active');
-        map.removeInteraction(interaction);
-        interactionSelect.getFeatures().clear();
-        map.removeInteraction(interactionSelect);
+            $(this).siblings().removeClass('btn-active');
+            $(this).addClass('btn-active');
+            map.removeInteraction(interaction);
+            interactionSelect.getFeatures().clear();
+            map.removeInteraction(interactionSelect);
 
-        switch ($(this).attr('id')) {
+            switch ($(this).attr('id')) {
 
-            case 'btnEdit':
-                map.addInteraction(interactionSelect);
-                interaction = new ol.interaction.Modify({
-                    features: interactionSelect.getFeatures()
-                });
-                map.addInteraction(interaction);
-                map.addInteraction(interactionSnap);
-                util = {};
-                interactionSelect.getFeatures().on('add', function (e) {
-                    e.element.on('change', function (e) {
-                        util[e.target.getId()] = true;
+                case 'btnEdit':
+                    map.addInteraction(interactionSelect);
+                    interaction = new ol.interaction.Modify({
+                        features: interactionSelect.getFeatures()
                     });
-                });
-                interactionSelect.getFeatures().on('remove', function (e) {
-                    var f = e.element;
-                    if (util[f.getId()]) {
-                        delete util[f.getId()];
-                        var featureProperties = f.getProperties();
-                        delete featureProperties.boundedBy;
-                        var clone = new ol.Feature(featureProperties);
-                        clone.setId(f.getId());
-                        transactWFS('update', clone);
-                    }
-                });
-                break;
-            case 'btnPoint':
-                interaction = new ol.interaction.Draw({
-                    type: 'Point',
-                    source: layerWFS.getSource()
-                });
-                map.addInteraction(interaction);
-                interaction.on('drawend', function (e) {
-                    transactWFS('insert', e.feature);
-                });
-                break;
+                    map.addInteraction(interaction);
+                    map.addInteraction(interactionSnap);
+                    util = {};
+                    interactionSelect.getFeatures().on('add', function (e) {
+                        e.element.on('change', function (e) {
+                            util[e.target.getId()] = true;
+                        });
+                    });
+                    interactionSelect.getFeatures().on('remove', function (e) {
+                        var f = e.element;
+                        if (util[f.getId()]) {
+                            delete util[f.getId()];
+                            var featureProperties = f.getProperties();
+                            delete featureProperties.boundedBy;
+                            var clone = new ol.Feature(featureProperties);
+                            clone.setId(f.getId());
+                            transactWFS('update', clone);
+                        }
+                    });
+                    break;
+                case 'btnPoint':
+                    interaction = new ol.interaction.Draw({
+                        type: 'Point',
+                        source: layerWFS.getSource()
+                    });
+                    map.addInteraction(interaction);
+                    interaction.on('drawend', function (e) {
+                        transactWFS('insert', e.feature);
+                    });
+                    break;
 
-            case 'btnLine':
-                interaction = new ol.interaction.Draw({
-                    type: 'LineString',
-                    source: layerWFS.getSource()
-                });
-                map.addInteraction(interaction);
-                interaction.on('drawend', function (e) {
-                    transactWFS('insert', e.feature);
-                });
-                break;
+                case 'btnLine':
+                    interaction = new ol.interaction.Draw({
+                        type: 'LineString',
+                        source: layerWFS.getSource()
+                    });
+                    map.addInteraction(interaction);
+                    interaction.on('drawend', function (e) {
+                        transactWFS('insert', e.feature);
+                    });
+                    break;
 
-            case 'btnArea':
-                interaction = new ol.interaction.Draw({
-                    type: 'Polygon',
-                    source: layerWFS.getSource()
-                });
-                interaction.on('drawend', function (e) {
-                    transactWFS('insert', e.feature);
-                });
-                map.addInteraction(interaction);
-                break;
+                case 'btnArea':
+                    interaction = new ol.interaction.Draw({
+                        type: 'Polygon',
+                        source: layerWFS.getSource()
+                    });
+                    interaction.on('drawend', function (e) {
+                        transactWFS('insert', e.feature);
+                    });
+                    map.addInteraction(interaction);
+                    break;
 
-            case 'btnDelete':
-                interaction = new ol.interaction.Select();
-                interaction.getFeatures().on('add', function (e) {
-                    transactWFS('delete', e.target.item(0));
-                    interactionSelectPointerMove.getFeatures().clear();
-                    interaction.getFeatures().clear();
-                });
-                map.addInteraction(interaction);
-                break;
-            case 'btnDeleteAll':
-                // interaction = new ol.interaction.Select();
-                // interaction.getFeatures().on('add', function (e) {
-                //     transactWFS('delete', e.target.item(0));
-                //     interactionSelectPointerMove.getFeatures().clear();
-                //     interaction.getFeatures().clear();
-                // });
-                map.getFeatures().clear();
-                // map.addInteraction(interaction);
-                break;
-            default:
-                break;
+                case 'btnDelete':
+                    interaction = new ol.interaction.Select();
+                    interaction.getFeatures().on('add', function (e) {
+                        transactWFS('delete', e.target.item(0));
+                        interactionSelectPointerMove.getFeatures().clear();
+                        interaction.getFeatures().clear();
+                    });
+                    map.addInteraction(interaction);
+                    break;
+                case 'btnDeleteAll':
+                    /*-----------------------------*/
+
+                    var features = layerWFS.getSource().getFeatures();
+                    features.forEach((feature) => {
+                            if (feature.getGeometry().getType() === 'Polygon') {
+                                layerWFS.getSource().removeFeature(feature);
+
+                            } else if (feature.getGeometry().getType() === 'LineString') {
+                                layerWFS.getSource().removeFeature(feature);
+
+                            }
+                            else if (feature.getGeometry().getType() === 'Point') {
+                                layerWFS.getSource().removeFeature(feature);
+                            } else {
+                                console.log("there is another Goe type ?", feature.getGeometry().getType());
+                            }
+                        }
+                    );
+                    break;
+                default:
+                    break;
+            }
         }
-    });
+    )
+    ;
 //Display the coordinates :
     var mouse_position = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
+
     var radius = 5000;//the distance of the buffer
     map.on('click', function (e) {
         var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
@@ -232,68 +247,29 @@ function createMap(link, w, h) {
                 console.log("what's this!!!");
         }
     });
-    // var polyFeatures = mylayer.getSource();
-    //
-    // var coordsMulti = [];
-    // var coordsSingle = [];
-    // // polyFeatures.forEachFeature(function (polyFeature) {
-    // //     console.log("1");
-    //     // if (polyFeatures[0].getGeometry().getType() === 'Polygon') {
-    //         // this will get you all polygon coordinates
-    //         console.log("222");
-    //         coordsMulti.push(polyFeatures.getGeometry().getCoordinates());
-    //
-    //         // this will get you central coordinate of polygon
-    //         coordsSingle.push(polyFeatures[0].getGeometry().getInteriorPoint());
-    //         console.log(coordsMulti,coordsSingle);
-    //     // }
-    // // });
+// var polyFeatures = mylayer.getSource();
+//
+// var coordsMulti = [];
+// var coordsSingle = [];
+// // polyFeatures.forEachFeature(function (polyFeature) {
+// //     console.log("1");
+//     // if (polyFeatures[0].getGeometry().getType() === 'Polygon') {
+//         // this will get you all polygon coordinates
+//         console.log("222");
+//         coordsMulti.push(polyFeatures.getGeometry().getCoordinates());
+//
+//         // this will get you central coordinate of polygon
+//         coordsSingle.push(polyFeatures[0].getGeometry().getInteriorPoint());
+//         console.log(coordsMulti,coordsSingle);
+//     // }
+// // });
 
     map.addControl(mouse_position);
-    {
-        // new code
 
-        var measurementRadios = $('[type=radio]');
-        var resultElement = $('#js-result');
-        var measuringTool;
-
-        var enableMeasuringTool = function () {
-            map.removeInteraction(measuringTool);
-            var geometryType = measurementRadios.filter(':checked').val();
-            var html = geometryType === 'Polygon' ? '<sup>2</sup>' : '';
-
-            measuringTool = new ol.interaction.Draw({
-                type: geometryType,
-                source: vectorLayer.getSource()
-            });
-
-            measuringTool.on('drawstart', function (event) {
-                vectorLayer.getSource().clear();
-
-                event.feature.on('change', function (event) {
-                    var measurement = geometryType === 'Polygon' ?
-                        event.target.getGeometry().getArea() : event.target.getGeometry().getLength();
-
-                    var measurementFormatted = measurement > 100 ? (measurement / 1000).toFixed(2) +
-                        'km' : measurement.toFixed(2) + 'm';
-
-                    resultElement.html(measurementFormatted + html);
-                });
-            });
-
-            map.addInteraction(measuringTool);
-        }
-    }
-    ;
-    ///
-
-    measurementRadios.on('change', enableMeasuringTool);
-
-    enableMeasuringTool();
 
 }
 
-//createMap('./data/Dz_Batna_map.png', 1280, 930);
+// createMap('./data/Dz_Batna_map.png', 1280, 930);
 
 //----------------------------------------------------------//
 
@@ -380,7 +356,7 @@ App.init = function () {
         sizeOf(img.path, function (err, dimensions) {
             try {
                 createMap(img.path, dimensions.width, dimensions.height);
-                console.log("creating the map");
+                // createMap('./data/Dz_Batna_map.png', 1280, 930);
                 console.log(dimensions.height, dimensions.width);
             } catch (ex) {
                 console.log("image dimensions !!");
