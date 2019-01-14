@@ -303,8 +303,33 @@ function Measurement(feature) {
 	}
 }
 
+function showAttribTable() {
+	$(document.getElementById("attribTable")).show()
+}
+
+function hideAttribTable() {
+	$(document.getElementById("attribTable")).hide()
+}
+
 function renderAttribTable (attribTable) {
-	
+	$(document).ready(function () {
+		var table = '<table class="table table-striped">';
+		table += '<tr>';
+		var flag = 0;
+		$.each(attribTable[0], function(index, value){
+			table += '<th>'+index+'</th>';
+		});
+		table += '</tr>';
+		 $.each(attribTable, function(index, value){
+			 table += '<tr>';
+			$.each(value, function(index2, value2){
+				table += '<td>'+value2+'</td>';
+			});
+			table += '<tr>';
+		 });
+		 table += '</table>';
+		 $(document.getElementById("attribTable")).html(table);
+	});
 }
 
 function addFeatureToAttribTable (attribTable, feature) {
