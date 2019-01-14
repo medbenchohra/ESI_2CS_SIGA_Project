@@ -263,9 +263,9 @@ function createMap(link, w, h) {
             )
         ).geometry;
         var geomB = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
-            new ol.Feature({
-                geometry: polygeomB
-            })
+				new ol.Feature({
+					geometry: polygeomB
+				})
             )
         ).geometry;
         return geomA.intersects(geomB);
@@ -276,6 +276,9 @@ function createMap(link, w, h) {
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
+	
+	mouse_position.setPosition();
+	
     var radius = 5000;//the distance of the buffer
     // map.on('click', function (e) {
     //     var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
