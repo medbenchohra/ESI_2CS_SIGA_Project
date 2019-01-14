@@ -119,7 +119,6 @@ function createMap(link, w, h) {
             sourceWFS.clear();
         });
     };
-
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
             $(this).addClass('btn-active');
@@ -197,8 +196,7 @@ function createMap(link, w, h) {
                     map.addInteraction(interaction);
                     break;
                 case 'btnDeleteAll':
-                    /*-----------------------------*/
-
+                    // map.removeLayer(map.getLayers().getArray()[1]);
                     var features = layerWFS.getSource().getFeatures();
                     features.forEach((feature) => {
                             if (feature.getGeometry().getType() === 'Polygon') {
@@ -216,37 +214,92 @@ function createMap(link, w, h) {
                         }
                     );
                     break;
+                case 'btnOperations':
+                    counter = 0;
+                    var selected = [];
+                    // var geomA = e.feature.getGeometry();
+                    map.on('click', function (e) {
+                            var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+                                //if feature is in the layer you want
+                                return feature;
+                            });
+                            if (feat != null) {
+                                selected.push(feat);
+                                if (feat.getGeometry().getType() === 'Polygon' && selected.length === 2) {
+                                    var geomA = selected[0].getGeometry();
+                                    var geomB = selected[1].getGeometry();
+                                    intersection = polyIntersectsPoly(geomA, geomB);
+                                    if (intersection === true) {
+                                        alert("There is intersection");
+                                    }else {
+                                        alert("There is no intersection");
+                                    }
+                                    selected=[];
+                                }
+                            }
+                        }
+                    );
+
+                    break;
                 default:
                     break;
             }
         }
     )
     ;
+
+    function createJstsPolygon(geometryFactory, polygon) {
+        var path = polygon.getPath();
+        var coordinates = path.getArray().map(function name(coord) {
+            return new jsts.geom.Coordinate(coord.lat(), coord.lng());
+        });
+        if (coordinates[0].compareTo(coordinates[coordinates.length - 1]) != 0)
+            coordinates.push(coordinates[0]);
+        var shell = geometryFactory.createLinearRing(coordinates);
+        return geometryFactory.createPolygon(shell);
+    }
+
+    function polyIntersectsPoly(polygeomA, polygeomB) {
+        var jsts = require('jsts');
+        var geomA = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
+            new ol.Feature({
+                geometry: polygeomA
+            })
+            )
+        ).geometry;
+        var geomB = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
+            new ol.Feature({
+                geometry: polygeomB
+            })
+            )
+        ).geometry;
+        return geomA.intersects(geomB);
+    };
+
 //Display the coordinates :
     var mouse_position = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
-
     var radius = 5000;//the distance of the buffer
-    map.on('click', function (e) {
-        var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-            //if feature is in the layer you want
-            return feature;
-        });
-        if (feat != null) {
-            var point = feat.getGeometry().getCoordinates();
-
-            if (feat.getGeometry().getType() === 'Polygon') {
-                console.log("polygon:", point);
-            } else if (feat.getGeometry().getType() === 'Point') {
-                console.log("Point:", point);
-            } else if (feat.getGeometry().getType() === 'LineString') {
-                console.log("LineString:", point);
-            } else
-                console.log("what's this!!!");
-        }
-    });
+    // map.on('click', function (e) {
+    //     var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+    //         //if feature is in the layer you want
+    //         return feature;
+    //     });
+    //     if (feat != null) {
+    //         var point = feat.getGeometry().getCoordinates();
+    //
+    //         if (feat.getGeometry().getType() === 'Polygon') {
+    //             console.log("polygon:", point);
+    //         } else if (feat.getGeometry().getType() === 'Point') {
+    //             console.log("Point:", point);
+    //         } else if (feat.getGeometry().getType() === 'LineString') {
+    //             console.log("LineString:", point);
+    //         } else
+    //             console.log("what's this!!!");
+    //     }
+    // });
 // var polyFeatures = mylayer.getSource();
 //
 // var coordsMulti = [];
@@ -269,7 +322,7 @@ function createMap(link, w, h) {
 
 }
 
-// createMap('./data/Dz_Batna_map.png', 1280, 930);
+createMap('./data/Dz_Batna_map.png', 1280, 930);
 
 //----------------------------------------------------------//
 
@@ -355,8 +408,8 @@ App.init = function () {
         var sizeOf = require('image-size');
         sizeOf(img.path, function (err, dimensions) {
             try {
-                createMap(img.path, dimensions.width, dimensions.height);
-                // createMap('./data/Dz_Batna_map.png', 1280, 930);
+                // createMap(img.path, dimensions.width, dimensions.height);
+                createMap('./data/Dz_Batna_map.png', 1280, 930);
                 console.log(dimensions.height, dimensions.width);
             } catch (ex) {
                 console.log("image dimensions !!");

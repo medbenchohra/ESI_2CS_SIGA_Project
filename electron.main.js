@@ -6,12 +6,11 @@ let mainwindow;
 
 app.on('ready', function () {
     // mainwindow = new BrowserWindow({maxWidth });
-    mainwindow = new BrowserWindow({width: 1360, height: 768 });
+    mainwindow = new BrowserWindow({width: 1360, height: 768});
     mainwindow.$ = mainwindow.jQuery = require('jquery');
     mainwindow.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
         slashes: true
     }));
-    mainwindow.resol
 });
