@@ -4,6 +4,11 @@
     left: 140px;
 }
 
+#btnPoint:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
 #btnLine {
     position: absolute;
     top: 10px;
@@ -23,25 +28,94 @@
 }
 
 #btnDelete {
+
     position: absolute;
     top: 10px;
     left: 380px;
 }
-#btnDeleteAll {
-    position: absolute;
-    top: 10px;
-    left: 440px;
-}
-#btnOperations{
-    position: absolute;
-    top: 10px;
-    left: 500px;
-}
+/*#btnOperations {*/
+    /*position: absolute;*/
+    /*top: 10px;*/
+    /*left: 500px;*/
+/*}*/
+
 .btn-active {
     background-color: #38adc7 !important;
 }
-.olControlScale{
+
+.olControlScale {
     top: 5em !important;
     left: 0em !important;
 }
 
+.button {
+    border-radius: 4px;
+    background-color: #f4511e;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 17px;
+    width: 150px;
+    height: 40px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.button:hover span {
+    padding-right: 25px;
+}
+
+.button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+#btnDeleteAll:hover:before {
+    content: "Delete All!"
+}
+
+#btnSelect:hover:before {
+    content: "Select!"
+}
+
+#btnOperations:hover:before {
+    content: "Operations!"
+}
+
+button:hover span {
+    display: none
+}
+
+#btnOperations {
+    position: absolute;
+    top: 10px;
+    left: 800px;
+}
+
+#btnDeleteAll {
+    position: absolute;
+    top: 10px;
+    left: 600px;
+}
+
+#btnSelect {
+    position: absolute;
+    top: 10px;
+    left: 1000px;
+}

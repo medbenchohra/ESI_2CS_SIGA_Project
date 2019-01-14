@@ -1,42 +1,42 @@
-    var formatWFS = new ol.format.WFS();
 
-    var formatGML = new ol.format.GML({
-        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
-        featureType: 'wfs_geom',
-        srsName: 'EPSG:3857'
-    });
+var formatWFS = new ol.format.WFS();
 
-    var xs = new XMLSerializer();
+var formatGML = new ol.format.GML({
+    featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+    featureType: 'wfs_geom',
+    srsName: 'EPSG:3857'
+});
 
-    var sourceWFS = new ol.source.Vector({
-        loader: function (extent) {
-            $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
-                type: 'GET',
-                data: {
-                    service: 'WFS',
-                    version: '1.1.0',
-                    request: 'GetFeature',
-                    typename: 'wfs_geom',
-                    srsname: 'EPSG:3857',
-                    bbox: extent.join(',') + ',EPSG:3857'
-                }
-            }).done(function (response) {
-                sourceWFS.addFeatures(formatWFS.readFeatures(response));
-                // sourceWFS.clear();
-            });
-        },
-        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
-        strategy: ol.loadingstrategy.bbox,
-        projection: 'EPSG:3857'
-    });
-	
-    sourceWFS.clear();
-    var layerWFS = new ol.layer.Vector({
-        source: sourceWFS
-    });
+var xs = new XMLSerializer();
+
+var sourceWFS = new ol.source.Vector({
+    loader: function (extent) {
+        $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+            type: 'GET',
+            data: {
+                service: 'WFS',
+                version: '1.1.0',
+                request: 'GetFeature',
+                typename: 'wfs_geom',
+                srsname: 'EPSG:3857',
+                bbox: extent.join(',') + ',EPSG:3857'
+            }
+        }).done(function (response) {
+            sourceWFS.addFeatures(formatWFS.readFeatures(response));
+            // sourceWFS.clear();
+        });
+    },
+    //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+    strategy: ol.loadingstrategy.bbox,
+    projection: 'EPSG:3857'
+});
+sourceWFS.clear();
+var layerWFS = new ol.layer.Vector({
+    source: sourceWFS
+});
+
 
 function createMap(link, w, h) {
-
     var interaction;
 
     var interactionSelectPointerMove = new ol.interaction.Select({
@@ -54,7 +54,7 @@ function createMap(link, w, h) {
     var interactionSnap = new ol.interaction.Snap({
         source: layerWFS.getSource()
     });
-	
+
     var scaleLineControl = new ol.control.ScaleLine();
     var pixelProjection = new ol.proj.Projection({
         code: 'pixel',
@@ -230,16 +230,19 @@ function createMap(link, w, h) {
                                     intersection = polyIntersectsPoly(geomA, geomB);
                                     if (intersection === true) {
                                         alert("There is intersection");
-                                    }else {
+                                    } else {
                                         alert("There is no intersection");
                                     }
-                                    selected=[];
+                                    selected = [];
                                 }
                             }
                         }
                     );
-
                     break;
+					
+                case 'btnSelect':
+                    break;
+					
                 default:
                     break;
             }
@@ -274,49 +277,30 @@ function createMap(link, w, h) {
         return geomA.intersects(geomB);
     };
 
-//Display the coordinates :
+	//Display the coordinates :
     var mouse_position = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
     var radius = 5000;//the distance of the buffer
-    // map.on('click', function (e) {
-    //     var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-    //         //if feature is in the layer you want
-    //         return feature;
-    //     });
-    //     if (feat != null) {
-    //         var point = feat.getGeometry().getCoordinates();
-    //
-    //         if (feat.getGeometry().getType() === 'Polygon') {
-    //             console.log("polygon:", point);
-    //         } else if (feat.getGeometry().getType() === 'Point') {
-    //             console.log("Point:", point);
-    //         } else if (feat.getGeometry().getType() === 'LineString') {
-    //             console.log("LineString:", point);
-    //         } else
-    //             console.log("what's this!!!");
-    //     }
-    // });
-// var polyFeatures = mylayer.getSource();
-//
-// var coordsMulti = [];
-// var coordsSingle = [];
-// // polyFeatures.forEachFeature(function (polyFeature) {
-// //     console.log("1");
-//     // if (polyFeatures[0].getGeometry().getType() === 'Polygon') {
-//         // this will get you all polygon coordinates
-//         console.log("222");
-//         coordsMulti.push(polyFeatures.getGeometry().getCoordinates());
-//
-//         // this will get you central coordinate of polygon
-//         coordsSingle.push(polyFeatures[0].getGeometry().getInteriorPoint());
-//         console.log(coordsMulti,coordsSingle);
-//     // }
-// // });
-
+   
     map.addControl(mouse_position);
 	
+}
+
+function Measurement(feature) {
+	if (feature != null) {
+		switch (feature.getGeometry().getType()) {
+			case'Polygon':
+				return feature.getGeometry().getArea();
+				break;
+			case   'LineString':
+				return feature.getGeometry().getLength();
+				break;
+			default:
+				return null;
+		}
+	}
 }
 
 function createAttribTable(features) {
@@ -325,26 +309,31 @@ function createAttribTable(features) {
 	
 	for(i=0 ; i++ ; features.length) {
 		featureType = feature.getGeometry().getType();
-//						switch (featureType) {
-//							case 'Polygon':
-//                                layerWFS.getSource().removeFeature(feature);
-//								break;
-//                            case 'LineString':
-//                                layerWFS.getSource().removeFeature(feature);
-//								break;
-//							case 'Point':
-//                                layerWFS.getSource().removeFeature(feature);
-//								break;
-//							default:
-//                                console.log("there is another Goe type ?", feature.getGeometry().getType());
-//						}
-		attribTable[""+i] = {
-			'name': features[i].get('name'),
-			'distance': calculateDistance(features[i].getGeometry().getCoordinates()),
-			'area': calculateArea(features[i].getGeometry().getCoordinates()),
+		switch (featureType) {
+			case 'Polygon':
+				attribTable[""+i] = {
+					'name': features[i].get('name'),
+					'area': Measurement(features[i])
+				}
+				break;
+				
+			case 'LineString':
+				attribTable[""+i] = {
+					'name': features[i].get('name'),
+					'distance': Measurement(features[i])
+				}
+				break;
+				
+			case 'Point':
+				attribTable[""+i] = {
+					'name': features[i].get('name')
+				}
+				break;
+				
+			default:
+				console.log("there is another Goe type ?", feature.getGeometry().getType());
 		}
 	}
-
 	
 	return attribTable;
 }
@@ -448,4 +437,3 @@ App.init = function () {
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
 }();
-
