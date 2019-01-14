@@ -1,31 +1,32 @@
 #btnPoint {
     position: absolute;
-    top: 10px;
-    left: 140px;
+    right: 20px;
+    top: 140px;
 }
 
 #btnLine {
     position: absolute;
-    top: 10px;
-    left: 200px;
+    right: 20px;
+    top: 200px;
 }
 
 #btnArea {
     position: absolute;
-    top: 10px;
-    left: 260px;
+    right: 20px;
+    top: 260px;
 }
 
 #btnEdit {
     position: absolute;
-    top: 10px;
-    left: 320px;
+    right: 20px;
+    top: 320px;
 }
 
 #btnDelete {
+
     position: absolute;
-    top: 10px;
-    left: 380px;
+    right: 20px;
+    top: 380px;
 }
 
 #btnDeleteAll {
@@ -42,14 +43,23 @@
 
 #btnOperations {
     position: absolute;
+    right: 140px;
     top: 10px;
-    left: 560px;
 }
 
 #btnSymbologie {
     position: absolute;
+    right: 200px;
     top: 10px;
-    left: 620px;
+}
+
+#showLayer {
+    background-color: cadetblue;
+    border-radius: 15px;
+    padding: 10px 15px 15px 15px;
+    position: absolute;
+    top: 100px;
+    left: 10px;
 }
 
 .btn-active {
@@ -61,3 +71,35 @@
     left: 0em !important;
 }
 
+.button {
+    border-radius: 4px;
+    background-color: #f4511e;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 17px;
+    width: 150px;
+    height: 40px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.ol-attribution.ol-uncollapsible img {
+    display: none;
+}

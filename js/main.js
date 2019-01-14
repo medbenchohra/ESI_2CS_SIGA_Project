@@ -1,3 +1,5 @@
+
+
 var formatWFS = new ol.format.WFS();
 
 var formatGML = new ol.format.GML({
@@ -35,8 +37,8 @@ var layerWFS = new ol.layer.Vector({
 });
 
 
-function createMap(link, w, h) {
 
+function createMap(link, w, h) {
     var interaction;
 
     var interactionSelectPointerMove = new ol.interaction.Select({
@@ -54,23 +56,26 @@ function createMap(link, w, h) {
     var interactionSnap = new ol.interaction.Snap({
         source: layerWFS.getSource()
     });
+
     var scaleLineControl = new ol.control.ScaleLine();
     var pixelProjection = new ol.proj.Projection({
         code: 'pixel',
         units: 'pixels',
         extent: [0, 0, w, h]
     });
+	
     var mysource = new ol.source.ImageStatic({
-        attributions: [
-            new ol.Attribution({
-                html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
-            })
-        ],
+        // attributions: [
+        //     new ol.Attribution({
+        //         html: '&copy;<a href="https://opensource.org/licenses/MIT/">SIG-A frlm </a>'
+        //     })
+        // ],
         url: link,
         imageSize: [w, h],
         projection: pixelProjection,
         imageExtent: pixelProjection.getExtent()
     });
+	
     var mylayer = new ol.layer.Image({
         source: mysource
     });
@@ -277,7 +282,7 @@ function createMap(link, w, h) {
                         for (var i = 0; i < features.length; i++) transactWFS('delete', features[i]);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
-                        layerWFS.getSource().clear();
+                        sourceWFS.clear();
                     });
                     map.addInteraction(interaction);
                     break;
@@ -285,7 +290,6 @@ function createMap(link, w, h) {
                 case 'btnOperations':
                     counter = 0;
                     var selected = [];
-                    // var geomA = e.feature.getGeometry();
                     map.on('click', function (e) {
                             var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
                                 //if feature is in the layer you want
@@ -307,6 +311,7 @@ function createMap(link, w, h) {
                             }
                         }
                     );
+					
                     break;
                 case 'btnSymbologie':
                     print();
@@ -332,6 +337,10 @@ function createMap(link, w, h) {
                         }
                     });
                     break;
+					
+                case 'btnSelect':
+                    break;
+					
                 default:
                     break;
             }
@@ -460,15 +469,109 @@ function createMap(link, w, h) {
         return geomA.intersects(geomB);
     };
 
-//Display the coordinates :
+	//Display the coordinates :
     var mouse_position = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
+	
+    var radius = 5000;//the distance of the buffer
+   
     map.addControl(mouse_position);
+	
 }
 
+function Measurement(feature) {
+	if (feature != null) {
+		switch (feature.getGeometry().getType()) {
+			case'Polygon':
+				return feature.getGeometry().getArea();
+				break;
+			case   'LineString':
+				return feature.getGeometry().getLength();
+				break;
+			default:
+				return null;
+		}
+	}
+}
+
+function showAttribTable() {
+	$(document.getElementById("attribTable")).show()
+}
+
+function hideAttribTable() {
+	$(document.getElementById("attribTable")).hide()
+}
+
+function renderAttribTable (attribTable) {
+	$(document).ready(function () {
+		var table = '<table class="table table-striped">';
+		table += '<tr>';
+		var flag = 0;
+		$.each(attribTable[0], function(index, value){
+			table += '<th>'+index+'</th>';
+		});
+		table += '</tr>';
+		 $.each(attribTable, function(index, value){
+			 table += '<tr>';
+			$.each(value, function(index2, value2){
+				table += '<td>'+value2+'</td>';
+			});
+			table += '<tr>';
+		 });
+		 table += '</table>';
+		 $(document.getElementById("attribTable")).html(table);
+	});
+}
+
+function addFeatureToAttribTable (attribTable, feature) {
+	
+}
+
+function createAttribTableFromFeatures(features) {
+	attribTable = [];
+	
+	for(i=0 ; i<features.length ; i++) {
+		featureType = features[i].getGeometry().getType();
+		switch (featureType) {
+			case 'Polygon':
+				attribTable[i] = {
+					'id': i,
+					'name': features[i].get('name'),
+					'area': Math.floor(Measurement(features[i])),
+					'distance': '-'
+				};
+				break;
+				
+			case 'LineString':
+				attribTable[i] = {
+					'id': i,
+					'name': features[i].get('name'),
+					'area': '-',
+					'distance': Math.floor(Measurement(features[i]))
+				};
+				break;
+				
+			case 'Point':
+				attribTable[i] = {
+					'id': i,
+					'name': features[i].get('name'),
+					'area': '-',
+					'distance': '-'
+				};
+				break;
+				
+			default:
+				console.log("there is another Goe type ?", feature.getGeometry().getType());
+		}
+	}
+	
+	return attribTable;
+}
+ 
 createMap('./data/Dz_Batna_map.png', 1280, 930);
+
 
 //----------------------------------------------------------//
 
@@ -567,4 +670,3 @@ App.init = function () {
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
 }();
-
