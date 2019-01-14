@@ -103,3 +103,17 @@
 .ol-attribution.ol-uncollapsible img {
     display: none;
 }
+
+.ol-mouse-position {
+    /*top: auto;*/
+    bottom: 200em;
+    /*top: 500px;*/
+}
+
+#coords {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    right: 50px;
+    z-index: 1;
+}

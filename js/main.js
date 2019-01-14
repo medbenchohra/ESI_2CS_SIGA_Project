@@ -472,6 +472,7 @@ function createMap(link, w, h) {
 	//Display the coordinates :
     var mouse_position = new ol.control.MousePosition({
         coordinateFormat: ol.coordinate.createStringXY(4),
+        target : $('#coords').get(0),
         projection: 'EPSG:4326'
     });
 	
