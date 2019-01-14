@@ -255,6 +255,8 @@ function createMap(link, w, h) {
                     );
 
                     break;
+                case 'btnSelect':
+                    break;
                 default:
                     break;
             }
