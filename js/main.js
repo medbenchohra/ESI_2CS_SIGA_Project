@@ -206,10 +206,26 @@ function createMap(link, w, h) {
                         interaction.getFeatures().clear();
                         layerWFS.getSource().clear();
                     });
+<<<<<<< HEAD
+                    map.addInteraction(interaction);
+                    break;
+
+                case 'showLayer':
+                    var features= sourceWFS.getFeatures();
+                    for (var i=0; i<features.length; i++) {
+                        console.log("type of feature: "+features[i].getGeometry().getType());
+                        if (features[i].getGeometry().getType() != 'Polygon') {features[i].setStyle(new ol.style.Style({}));}
+                        else { features[i].setStyle(null);}
+                    }
+                    break;
+
+
+=======
 
                     map.addInteraction(interaction);
                     break;
 					
+>>>>>>> 330bc3009a3d98fb574ca4494332ce0a81e81d46
                 case 'btnOperations':
                     counter = 0;
                     var selected = [];
