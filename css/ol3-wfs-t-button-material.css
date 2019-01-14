@@ -9,13 +9,6 @@
     right: 0;
 }
 
-/*#btnPoint:hover:before {*/
-    /*height: 800px;*/
-    /*width: 800px;*/
-    /*content: "Create point!";*/
-    /*font-size: 10px;*/
-/*}*/
-
 #btnLine {
     position: absolute;
     top: 10px;
@@ -40,11 +33,11 @@
     top: 10px;
     left: 380px;
 }
-#btnOperations {
-    position: absolute;
-    top: 10px;
-    left: 500px;
-}
+/*#btnOperations {*/
+    /*position: absolute;*/
+    /*top: 10px;*/
+    /*left: 500px;*/
+/*}*/
 
 .btn-active {
     background-color: #38adc7 !important;
@@ -118,7 +111,7 @@ button:hover span {
 #btnDeleteAll {
     position: absolute;
     top: 10px;
-    left: 1200px;
+    left: 600px;
 }
 
 #btnSelect {
