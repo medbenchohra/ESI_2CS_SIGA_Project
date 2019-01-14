@@ -15,72 +15,90 @@
 </head>
 
 <body>
-<div id="upload-img" class="upload hidden">
-    <div class="upload-files">
-        <header>
-            <p>
-                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                <span class="up">up</span>
-                <span class="load">load</span>
-                <span class="load"></span>
-                <span class="load">your image to start</span>
-            </p>
-        </header>
-        <div class="body" id="drop">
-            <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
-            <p class="pointer-none"><b>Drag and drop</b> files here <br/> or <a href="" id="triggerFile">browse</a>
-                to begin
-                the upload</p>
-            <input type="file" multiple="multiple"/>
-        </div>
-        <footer>
-            <div class="divider">
-                        <span>
-                            <AR> SELECTED IMAGES :</AR>
-                        </span>
-            </div>
-            <div class="list-files">
-                <!--   template   -->
-            </div>
-            <button class="importar"> Start</button>
-            <!--<input class="input" placeholder="Enter the coefficient" type="number">-->
-        </footer>
-    </div>
-</div>
+	<div id="upload-img" class="upload hidden">
+		<div class="upload-files">
+			<header>
+				<p>
+					<i class="fa fa-cloud-upload" aria-hidden="true"></i>
+					<span class="up">up</span>
+					<span class="load">load</span>
+					<span class="load"></span>
+					<span class="load">your image to start</span>
+				</p>
+			</header>
+			<div class="body" id="drop">
+				<i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
+				<p class="pointer-none"><b>Drag and drop</b> files here <br/> or <a href="" id="triggerFile">browse</a>
+					to begin
+					the upload</p>
+				<input type="file" multiple="multiple"/>
+			</div>
+			<footer>
+				<div class="divider">
+					<span>
+						<AR> SELECTED IMAGES :</AR>
+					</span>
+				</div>
+				<div class="list-files">
+					<!--   template   -->
+				</div>
+				<button class="importar"> Start</button>
+				<!--<input class="input" placeholder="Enter the coefficient" type="number">-->
+			</footer>
+		</div>
+	</div>
 
-<div id="map-wrapper" class="">
-    <div id="map" class="map"></div>
-    <button title="Draw a point" id="btnPoint" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--accent">
-        <i class="material-icons">add_location</i>
-    </button>
-    <button title="Draw a line" id="btnLine" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">timeline</i>
-    </button>
-    <button title="Draw an area" id="btnArea" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">signal_cellular_null</i>
-    </button>
-    <button title="Edit a shape" id="btnEdit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">build</i>
-    </button>
-    <button title="Delete a shape" id="btnDelete" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">delete</i>
-    </button>
-    <button title="Delete all shapes (click on a shape to initiate deletion)" id="btnDeleteAll" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">delete</i>
-    </button>
-    <button title="Intersect" id="btnOperations" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">delete</i>
-    </button>
-    <button title="symbologie" id="btnSymbologie" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">delete</i>
-    </button>
-    <div id="showLayer">
-    <input id="layer0" type="checkbox" name="point layer" value="Point"> point layer <br>
-    <input id="layer1" type="checkbox" name="line layer" value="LineString"> Line layer <br>
-    <input id="layer2" type="checkbox" name="polygon layer" value="Polygon"> polygon layer <br>
-    </div>
-</div>
+	<div id="map-wrapper" class="">
+		<div id="map" class="map"></div>
+		
+		<div id="buttons">
+			<button title="Draw a point" id="btnPoint" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--accent">
+				<i class="material-icons">add_location</i>
+			</button>
+			<button title="Draw a line" id="btnLine" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">timeline</i>
+			</button>
+			<button title="Draw an area" id="btnArea" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">signal_cellular_null</i>
+			</button>
+			<button title="Edit a shape" id="btnEdit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">build</i>
+			</button>
+			<button title="Delete a shape" id="btnDelete" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">delete</i>
+			</button>
+			<button title="Delete all shapes (click on a shape to initiate deletion)" id="btnDeleteAll" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">delete</i>
+			</button>
+			<button title="Intersect" id="btnOperations" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">delete</i>
+			</button>
+			<button title="Symbology" id="btnSymbologie" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+				<i class="material-icons">delete</i>
+			</button>
+			<button title="Selection tool" id="btnSelect">
+			</button>
+		</div>
+	
+		<div id="showLayer">
+			<strong>  Filters : </strong><br>
+			<input id="layer0" type="checkbox" name="point layer" value="Point">Points<br>
+			<input id="layer1" type="checkbox" name="line layer" value="LineString">Roads<br>
+			<input id="layer2" type="checkbox" name="polygon layer" value="Polygon">Areas<br>
+		</div>
+
+		<div id="attribTable">
+
+		</div>
+		
+		<div id="symbology">
+
+		</div>
+
+	</div>
+
 </body>
+
 <script type="text/javascript" src="js/main.js"></script>
 
 </html>

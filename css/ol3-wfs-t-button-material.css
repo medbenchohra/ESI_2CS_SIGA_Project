@@ -23,36 +23,73 @@
 }
 
 #btnDelete {
+
     position: absolute;
     top: 10px;
     left: 380px;
 }
+
 #btnDeleteAll {
     position: absolute;
     top: 10px;
     left: 440px;
 }
-#showLayer {
+
+#btnOperations{
     position: absolute;
     top: 10px;
     left: 700px;
 }
-#btnOperations{
-    position: absolute;
-    top: 10px;
-    left: 560px;
-}
 #btnSymbologie{
     position: absolute;
     top: 10px;
-    left: 620px;
+    left: 760px;
+}
+
+#showLayer {
+	background-color: cadetblue;
+	border-radius: 15px;
+	padding: 10px 15px 15px 15px;
+/*	margin: 15px;*/
+    position: absolute;
+    top: 100px;
+    left: 10px;
 }
 
 .btn-active {
     background-color: #38adc7 !important;
 }
-.olControlScale{
+
+.olControlScale {
     top: 5em !important;
     left: 0em !important;
 }
 
+.button {
+    border-radius: 4px;
+    background-color: #f4511e;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 17px;
+    width: 150px;
+    height: 40px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
