@@ -1,39 +1,42 @@
+var formatWFS = new ol.format.WFS();
+
+var formatGML = new ol.format.GML({
+	featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+	featureType: 'wfs_geom',
+	srsName: 'EPSG:3857'
+});
+
+var xs = new XMLSerializer();
+
+var sourceWFS = new ol.source.Vector({
+	loader: function (extent) {
+		$.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+			type: 'GET',
+			data: {
+				service: 'WFS',
+				version: '1.1.0',
+				request: 'GetFeature',
+				typename: 'wfs_geom',
+				srsname: 'EPSG:3857',
+				bbox: extent.join(',') + ',EPSG:3857'
+			}
+		}).done(function (response) {
+			sourceWFS.addFeatures(formatWFS.readFeatures(response));
+			// sourceWFS.clear();
+		});
+	},
+	//strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+	strategy: ol.loadingstrategy.bbox,
+	projection: 'EPSG:3857'
+});
+sourceWFS.clear();
+var layerWFS = new ol.layer.Vector({
+	source: sourceWFS
+});
+
+
+
 function createMap(link, w, h) {
-    var formatWFS = new ol.format.WFS();
-
-    var formatGML = new ol.format.GML({
-        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
-        featureType: 'wfs_geom',
-        srsName: 'EPSG:3857'
-    });
-
-    var xs = new XMLSerializer();
-
-    var sourceWFS = new ol.source.Vector({
-        loader: function (extent) {
-            $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
-                type: 'GET',
-                data: {
-                    service: 'WFS',
-                    version: '1.1.0',
-                    request: 'GetFeature',
-                    typename: 'wfs_geom',
-                    srsname: 'EPSG:3857',
-                    bbox: extent.join(',') + ',EPSG:3857'
-                }
-            }).done(function (response) {
-                sourceWFS.addFeatures(formatWFS.readFeatures(response));
-                // sourceWFS.clear();
-            });
-        },
-        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
-        strategy: ol.loadingstrategy.bbox,
-        projection: 'EPSG:3857'
-    });
-    sourceWFS.clear();
-    var layerWFS = new ol.layer.Vector({
-        source: sourceWFS
-    });
 
     var interaction;
 
@@ -119,6 +122,7 @@ function createMap(link, w, h) {
             sourceWFS.clear();
         });
     };
+
     function showSelectLayer() {
         let features= sourceWFS.getFeatures();
         for (let i=0; i<features.length; i++) {
@@ -134,7 +138,7 @@ function createMap(link, w, h) {
                 valueLine.checked) {
                 features[i].setStyle(null);
             }
-            if ((features[i].getGeometry().getType() == valuePolygon) && valuePolygon.checked) {
+            if ((features[i].getGeometry().getType() == valuePolygon.getAttribute("value")) && valuePolygon.checked) {
                 features[i].setStyle(null);
             }
         }
@@ -143,6 +147,24 @@ function createMap(link, w, h) {
     $('#layer0').change(function () {showSelectLayer();});
     $('#layer1').change(function () {showSelectLayer();});
     $('#layer2').change(function () {showSelectLayer();});
+	
+	function askForShapeName (feature) {
+		const prompt = require('electron-prompt');
+		
+		prompt({
+			title: 'Naming',
+			label: 'Please enter the name of the shape :',
+			value: 'City, District or Road',
+			inputAttrs: {type: 'url'}
+		}).then((r) => {
+			if (r === null) {
+				console.log('user cancelled');
+			} else {
+				feature.set('name', r);
+			}
+		}).catch(console.error);
+	}
+
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
             $(this).addClass('btn-active');
@@ -177,6 +199,7 @@ function createMap(link, w, h) {
                         }
                     });
                     break;
+					
                 case 'btnPoint':
                     interaction = new ol.interaction.Draw({
                         type: 'Point',
@@ -184,6 +207,7 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
+                        askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
                     });
                     break;
@@ -195,6 +219,7 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
+                        askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
                     });
                     break;
@@ -205,6 +230,7 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     interaction.on('drawend', function (e) {
+                        askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
                     });
                     map.addInteraction(interaction);
@@ -219,32 +245,18 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     break;
-					
+
                 case 'btnDeleteAll':
                     interaction = new ol.interaction.Select();
                     var features = layerWFS.getSource().getFeatures();
-                    features.forEach((feature)=> interaction.getFeatures().push(feature));
+                    features.forEach((feature) => interaction.getFeatures().push(feature));
                     interaction.getFeatures().on('add', function () {
-                        for (var i=0; i<features.length; i++) transactWFS('delete', features[i]);
+                        for (var i = 0; i < features.length; i++) transactWFS('delete', features[i]);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
                         layerWFS.getSource().clear();
                     });
                     map.addInteraction(interaction);
-                    break;
-
-                case 'showLayer':
-                   /* var features= sourceWFS.getFeatures();
-                    for (var i=0; i<features.length; i++) {
-                        console.log("type of feature: "+features[i].getGeometry().getType());
-                        if (features[i].getGeometry().getType() != 'Polygon') {
-							features[i].setStyle(new ol.style.Style({}));
-						}
-                        else {
-							features[i].setStyle(null);
-						}
-                    }*/
-                    showSelectLayer();
                     break;
 
                 case 'btnOperations':
@@ -264,16 +276,16 @@ function createMap(link, w, h) {
                                     intersection = polyIntersectsPoly(geomA, geomB);
                                     if (intersection === true) {
                                         alert("There is intersection");
-                                    }else {
+                                    } else {
                                         alert("There is no intersection");
                                     }
-                                    selected=[];
+                                    selected = [];
                                 }
                             }
                         }
                     );
-
                     break;
+					
                 default:
                     break;
             }
@@ -300,9 +312,9 @@ function createMap(link, w, h) {
             )
         ).geometry;
         var geomB = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
-				new ol.Feature({
-					geometry: polygeomB
-				})
+            new ol.Feature({
+                geometry: polygeomB
+            })
             )
         ).geometry;
         return geomA.intersects(geomB);
@@ -313,44 +325,6 @@ function createMap(link, w, h) {
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
-	
-	//mouse_position.setPosition();
-	
-    var radius = 5000;//the distance of the buffer
-    // map.on('click', function (e) {
-    //     var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-    //         //if feature is in the layer you want
-    //         return feature;
-    //     });
-    //     if (feat != null) {
-    //         var point = feat.getGeometry().getCoordinates();
-    //
-    //         if (feat.getGeometry().getType() === 'Polygon') {
-    //             console.log("polygon:", point);
-    //         } else if (feat.getGeometry().getType() === 'Point') {
-    //             console.log("Point:", point);
-    //         } else if (feat.getGeometry().getType() === 'LineString') {
-    //             console.log("LineString:", point);
-    //         } else
-    //             console.log("what's this!!!");
-    //     }
-    // });
-// var polyFeatures = mylayer.getSource();
-//
-// var coordsMulti = [];
-// var coordsSingle = [];
-// // polyFeatures.forEachFeature(function (polyFeature) {
-// //     console.log("1");
-//     // if (polyFeatures[0].getGeometry().getType() === 'Polygon') {
-//         // this will get you all polygon coordinates
-//         console.log("222");
-//         coordsMulti.push(polyFeatures.getGeometry().getCoordinates());
-//
-//         // this will get you central coordinate of polygon
-//         coordsSingle.push(polyFeatures[0].getGeometry().getInteriorPoint());
-//         console.log(coordsMulti,coordsSingle);
-//     // }
-// // });
 
     map.addControl(mouse_position);
 
