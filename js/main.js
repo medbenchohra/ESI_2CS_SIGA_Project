@@ -54,12 +54,14 @@ function createMap(link, w, h) {
     var interactionSnap = new ol.interaction.Snap({
         source: layerWFS.getSource()
     });
+	
     var scaleLineControl = new ol.control.ScaleLine();
     var pixelProjection = new ol.proj.Projection({
         code: 'pixel',
         units: 'pixels',
         extent: [0, 0, w, h]
     });
+	
     var mysource = new ol.source.ImageStatic({
         attributions: [
             new ol.Attribution({
