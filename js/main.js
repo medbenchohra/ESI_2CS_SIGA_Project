@@ -323,58 +323,13 @@ function createMap(link, w, h) {
                         if (feat != null) {
                             switch (feat.getGeometry().getType()) {
                                 case 'Polygon':
-                                    let colors = build_colors([255, 0, 0], [0, 0, 255], 10);
-                                    let features = sourceWFS.getFeatures();
-                                    counter = 0;
-                                    for (counter; counter < features.length; counter++) {
-                                        if (features[counter].getGeometry().getType() === 'Polygon') {
-                                            var style = new ol.style.Style({
-                                                fill: new ol.style.Fill({color: colors[counter]})
-                                            });
-                                            console.log(counter);
-                                            features[counter].setStyle(style);
-                                        }
-                                    }
-                                    // }
-                                    // features.forEach((feature) => {
-                                    //     if (feature.getGeometry().getType() === 'Polygon')
-                                    //         var style = new ol.style.Style({
-                                    //             fill: new ol.style.Fill({color: colors[counter]})
-                                    //         });
-                                    //     console.log(counter);
-                                    //     feature.setStyle(style);
-                                    // });
-
-                                    // var style = new ol.style.Style({
-                                    //     fill: new ol.style.Fill({color: '#96181e'})
-                                    // fill: new ol.style.Fill({color: '#96181e'})
-                                    // });
-                                    // feat.setStyle(style);
+                                    style_polygons();
                                     break;
                                 case 'LineString':
-                                    console.log("LineString");
-                                    console.log(feat.getStyle());
-                                    var style_modify = new ol.style.Style({
-                                        stroke: new ol.style.Stroke({
-                                            width: 6,
-                                            color: [123, 160, 52, 1]
-                                        })
-                                    });
-                                    feat.setStyle(style_modify);
-                                    console.log("Done");
+                                    style_LineString();
                                     break;
                                 case 'Point':
-                                    var style = new ol.style.Style({
-                                        image: new ol.style.Circle({
-                                            radius: 5,
-                                            fill: null,
-                                            stroke: new ol.style.Stroke({
-                                                color: [0, 0, 0, .9],
-                                                width: 3
-                                            })
-                                        })
-                                    });
-                                    feat.setStyle(style);
+                                    style_Points();
                                     break;
                                 default:
                                     break;
@@ -390,9 +345,62 @@ function createMap(link, w, h) {
                     break;
             }
         }
-    )
-    ;
-    var build_colors = function (start, end, n) {
+    );
+    var style_LineString = function () {
+        let features = sourceWFS.getFeatures();
+        features.forEach((feature) => {
+            if (feature.getGeometry().getType() === 'LineString') {
+                var hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' +
+                    (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+                var Line_string_style = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        width: 6,
+                        color: hue
+                    })
+                });
+                feature.setStyle(Line_string_style);
+            }
+        });
+    };
+    var style_Points = function () {
+        let features = sourceWFS.getFeatures();
+        counter = 0;
+        NO_features = features.length;
+        for (counter; counter < NO_features; counter++) {
+            feature = features[counter];
+            if (feature.getGeometry().getType() === 'Point') {
+                var hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' +
+                    (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+                var Point_style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        fill: null,
+                        stroke: new ol.style.Stroke({
+                            color: hue,
+                            width: 3
+                        })
+                    })
+                });
+                feature.setStyle(Point_style);
+            }
+        }
+    };
+    var style_polygons = function () {
+        let features = sourceWFS.getFeatures();
+        counter = 0;
+        NO_features = features.length;
+        let colors = build_colors_for_polygons([255, 0, 0], [0, 0, 255], NO_features);
+        for (counter; counter < NO_features; counter++) {
+            feature = features[counter];
+            if (feature.getGeometry().getType() === 'Polygon') {
+                var Polygon_style = new ol.style.Style({
+                    fill: new ol.style.Fill({color: colors[counter]})
+                });
+                feature.setStyle(Polygon_style);
+            }
+        }
+    };
+    var build_colors_for_polygons = function (start, end, n) {
 
         //Distance between each color
         var steps = [
@@ -414,17 +422,34 @@ function createMap(link, w, h) {
 
         return colors;
     };
-
-    function createJstsPolygon(geometryFactory, polygon) {
-        var path = polygon.getPath();
-        var coordinates = path.getArray().map(function name(coord) {
-            return new jsts.geom.Coordinate(coord.lat(), coord.lng());
-        });
-        if (coordinates[0].compareTo(coordinates[coordinates.length - 1]) != 0)
-            coordinates.push(coordinates[0]);
-        var shell = geometryFactory.createLinearRing(coordinates);
-        return geometryFactory.createPolygon(shell);
-    }
+    // var build_colors4 = function (start, end, n) {
+    //
+    //     //Distance between each color
+    //     a = (end[0] - start[0]);
+    //     if (a < 0) a = -a;
+    //     b = (end[1] - start[1]);
+    //     if (b < 0) b = -b;
+    //     c = (end[2] - start[2]);
+    //     if (c < 0) c = -c;
+    //     d = (end[3] - start[3]);
+    //     if (d < 0) d = -d;
+    //     d = 0;
+    //     var steps = [a / n, b / n, c / n, d / n];
+    //
+    //     //Build array of colors
+    //     var colors = [start];
+    //     for (var ii = 0; ii < n - 1; ++ii) {
+    //         colors.push([
+    //             Math.floor(colors[ii][0] + steps[0]),
+    //             Math.floor(colors[ii][1] + steps[1]),
+    //             Math.floor(colors[ii][2] + steps[2]),
+    //             Math.floor(colors[ii][3] + steps[3])
+    //         ]);
+    //     }
+    //     colors.push(end);
+    //
+    //     return colors;
+    // };
 
     function polyIntersectsPoly(polygeomA, polygeomB) {
         var jsts = require('jsts');
