@@ -119,6 +119,30 @@ function createMap(link, w, h) {
             sourceWFS.clear();
         });
     };
+    function showSelectLayer() {
+        let features= sourceWFS.getFeatures();
+        for (let i=0; i<features.length; i++) {
+             features[i].setStyle(new ol.style.Style({}));
+            let valuePoint = document.getElementById("layer0");
+            let valueLine = document.getElementById("layer1");
+            let valuePolygon= document.getElementById("layer2");
+            if ((features[i].getGeometry().getType() === valuePoint.getAttribute("value")) &&
+                valuePoint.checked){
+                features[i].setStyle(null);
+            }
+            if ((features[i].getGeometry().getType() === valueLine.getAttribute("value")) &&
+                valueLine.checked) {
+                features[i].setStyle(null);
+            }
+            if ((features[i].getGeometry().getType() == valuePolygon) && valuePolygon.checked) {
+                features[i].setStyle(null);
+            }
+        }
+
+    }
+    $('#layer0').change(function () {showSelectLayer();});
+    $('#layer1').change(function () {showSelectLayer();});
+    $('#layer2').change(function () {showSelectLayer();});
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
             $(this).addClass('btn-active');
@@ -210,7 +234,7 @@ function createMap(link, w, h) {
                     break;
 
                 case 'showLayer':
-                    var features= sourceWFS.getFeatures();
+                   /* var features= sourceWFS.getFeatures();
                     for (var i=0; i<features.length; i++) {
                         console.log("type of feature: "+features[i].getGeometry().getType());
                         if (features[i].getGeometry().getType() != 'Polygon') {
@@ -219,7 +243,8 @@ function createMap(link, w, h) {
                         else {
 							features[i].setStyle(null);
 						}
-                    }
+                    }*/
+                    showSelectLayer();
                     break;
 
                 case 'btnOperations':
@@ -289,7 +314,7 @@ function createMap(link, w, h) {
         projection: 'EPSG:4326'
     });
 	
-	mouse_position.setPosition();
+	//mouse_position.setPosition();
 	
     var radius = 5000;//the distance of the buffer
     // map.on('click', function (e) {

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc189dc5-a4a1-4cea-9892-09a15b6f30e3" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/ol3-wfs-t-button-material.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/ol3-wfs-t-button-material.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
@@ -20,8 +21,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="70" column="16" lean-forward="true" selection-start-line="70" selection-start-column="16" selection-end-line="70" selection-end-column="25" />
+            <state relative-caret-position="173">
+              <caret line="75" column="68" selection-start-line="75" selection-start-column="68" selection-end-line="75" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -56,8 +57,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="213" column="93" selection-start-line="213" selection-start-column="93" selection-end-line="213" selection-end-column="93" />
+            <state relative-caret-position="77">
+              <caret line="125" column="45" lean-forward="true" selection-start-line="125" selection-start-column="45" selection-end-line="125" selection-end-column="45" />
               <folding>
                 <element signature="e#0#6#0" expanded="true" />
               </folding>
@@ -66,19 +67,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/css/ol3-wfs-t-main.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="49" column="12" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/css/ol3-wfs-t-button-material.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
-              <caret line="26" column="14" lean-forward="true" selection-start-line="26" selection-start-column="14" selection-end-line="26" selection-end-column="14" />
+            <state relative-caret-position="244">
+              <caret line="38" selection-start-line="38" selection-end-line="38" />
             </state>
           </provider>
         </entry>
@@ -96,10 +88,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>layerW</find>
-      <find>Polygon</find>
-      <find>mylayer</find>
-      <find>point</find>
       <find>sourc</find>
       <find>myla</find>
       <find>source</find>
@@ -115,7 +103,6 @@
       <find>btnde</find>
       <find>var map</find>
       <find>btnd</find>
-      <find>Point</find>
       <find>map.</find>
       <find>map.on</find>
       <find>req</find>
@@ -126,6 +113,11 @@
       <find>createm</find>
       <find>transactWFS</find>
       <find>formatGML</find>
+      <find>Line</find>
+      <find>Point</find>
+      <find>#</find>
+      <find>layer0</find>
+      <find>drop</find>
     </findStrings>
     <replaceStrings>
       <replace>$$</replace>
@@ -159,8 +151,8 @@
         <option value="$PROJECT_DIR$/test.html" />
         <option value="$USER_HOME$/Downloads/PosBMark-master/demo.html" />
         <option value="$PROJECT_DIR$/electron.main.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/css/ol3-wfs-t-button-material.css" />
+        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/main.js" />
       </list>
     </option>
@@ -263,12 +255,12 @@
       <workItem from="1547399973528" duration="22433000" />
       <workItem from="1547453695273" duration="25000" />
       <workItem from="1547464627280" duration="8155000" />
-      <workItem from="1547475533385" duration="1807000" />
+      <workItem from="1547475533385" duration="7995000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="97393000" />
+    <option name="totallyTimeSpent" value="103581000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -399,29 +391,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/css/ol3-wfs-t-main.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="49" column="12" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="70" column="16" lean-forward="true" selection-start-line="70" selection-start-column="16" selection-end-line="70" selection-end-column="25" />
+        <state relative-caret-position="17">
+          <caret line="30" column="21" lean-forward="true" selection-start-line="30" selection-start-column="21" selection-end-line="30" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/css/ol3-wfs-t-button-material.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="26" column="14" lean-forward="true" selection-start-line="26" selection-start-column="14" selection-end-line="26" selection-end-column="14" />
+        <state relative-caret-position="244">
+          <caret line="38" selection-start-line="38" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="75" column="68" selection-start-line="75" selection-start-column="68" selection-end-line="75" selection-end-column="68" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="213" column="93" selection-start-line="213" selection-start-column="93" selection-end-line="213" selection-end-column="93" />
+        <state relative-caret-position="77">
+          <caret line="125" column="45" lean-forward="true" selection-start-line="125" selection-start-column="45" selection-end-line="125" selection-end-column="45" />
           <folding>
             <element signature="e#0#6#0" expanded="true" />
           </folding>

@@ -68,13 +68,14 @@
     <button title="Delete all shapes (click on a shape to initiate deletion)" id="btnDeleteAll" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
         <i class="material-icons">delete</i>
     </button>
-    <button id="showLayer" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-        <i class="material-icons">showDesiredLayer</i>
-    </button>
     <button title="Intersect" id="btnOperations" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
         <i class="material-icons">delete</i>
     </button>
-
+    <div id="showLayer">
+    <input id="layer0" type="checkbox" name="point layer" value="Point"> point layer <br>
+    <input id="layer1" type="checkbox" name="line layer" value="LineString"> Line layer <br>
+    <input id="layer2" type="checkbox" name="polygon layer" value="Polygon"> polygon layer <br>
+    </div>
 </div>
 </body>
 <script type="text/javascript" src="js/main.js"></script>
