@@ -27,22 +27,26 @@
     top: 10px;
     left: 380px;
 }
+
 #btnDeleteAll {
     position: absolute;
     top: 10px;
     left: 440px;
 }
+
 #showLayer {
     position: absolute;
     top: 10px;
     left: 700px;
 }
-#btnOperations{
+
+#btnOperations {
     position: absolute;
     top: 10px;
     left: 560px;
 }
-#btnSymbologie{
+
+#btnSymbologie {
     position: absolute;
     top: 10px;
     left: 620px;
@@ -51,7 +55,8 @@
 .btn-active {
     background-color: #38adc7 !important;
 }
-.olControlScale{
+
+.olControlScale {
     top: 5em !important;
     left: 0em !important;
 }

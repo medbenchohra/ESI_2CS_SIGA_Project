@@ -309,7 +309,7 @@ function createMap(link, w, h) {
                     );
                     break;
                 case 'btnSymbologie':
-
+                    print();
                     map.on('click', function (e) {
                         var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
                             //if feature is in the layer you want
@@ -387,6 +387,7 @@ function createMap(link, w, h) {
                 var Polygon_style = new ol.style.Style({
                     fill: new ol.style.Fill({color: colors[counter]})
                 });
+                console.log(colors[counter]);
                 feature.setStyle(Polygon_style);
             }
         }
