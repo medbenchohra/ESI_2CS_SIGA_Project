@@ -1,39 +1,42 @@
+var formatWFS = new ol.format.WFS();
+
+var formatGML = new ol.format.GML({
+	featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+	featureType: 'wfs_geom',
+	srsName: 'EPSG:3857'
+});
+
+var xs = new XMLSerializer();
+
+var sourceWFS = new ol.source.Vector({
+	loader: function (extent) {
+		$.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+			type: 'GET',
+			data: {
+				service: 'WFS',
+				version: '1.1.0',
+				request: 'GetFeature',
+				typename: 'wfs_geom',
+				srsname: 'EPSG:3857',
+				bbox: extent.join(',') + ',EPSG:3857'
+			}
+		}).done(function (response) {
+			sourceWFS.addFeatures(formatWFS.readFeatures(response));
+			// sourceWFS.clear();
+		});
+	},
+	//strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+	strategy: ol.loadingstrategy.bbox,
+	projection: 'EPSG:3857'
+});
+sourceWFS.clear();
+var layerWFS = new ol.layer.Vector({
+	source: sourceWFS
+});
+
+
+
 function createMap(link, w, h) {
-    var formatWFS = new ol.format.WFS();
-
-    var formatGML = new ol.format.GML({
-        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
-        featureType: 'wfs_geom',
-        srsName: 'EPSG:3857'
-    });
-
-    var xs = new XMLSerializer();
-
-    var sourceWFS = new ol.source.Vector({
-        loader: function (extent) {
-            $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
-                type: 'GET',
-                data: {
-                    service: 'WFS',
-                    version: '1.1.0',
-                    request: 'GetFeature',
-                    typename: 'wfs_geom',
-                    srsname: 'EPSG:3857',
-                    bbox: extent.join(',') + ',EPSG:3857'
-                }
-            }).done(function (response) {
-                sourceWFS.addFeatures(formatWFS.readFeatures(response));
-                // sourceWFS.clear();
-            });
-        },
-        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
-        strategy: ol.loadingstrategy.bbox,
-        projection: 'EPSG:3857'
-    });
-    sourceWFS.clear();
-    var layerWFS = new ol.layer.Vector({
-        source: sourceWFS
-    });
 
     var interaction;
 
@@ -119,6 +122,24 @@ function createMap(link, w, h) {
             sourceWFS.clear();
         });
     };
+	
+	function askForShapeName (feature) {
+		const prompt = require('electron-prompt');
+		
+		prompt({
+			title: 'Naming',
+			label: 'Please enter the name of the shape :',
+			value: 'City, District or Road',
+			inputAttrs: {type: 'url'}
+		}).then((r) => {
+			if (r === null) {
+				console.log('user cancelled');
+			} else {
+				feature.set('name', r);
+			}
+		}).catch(console.error);
+	}
+	
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
             $(this).addClass('btn-active');
@@ -153,6 +174,7 @@ function createMap(link, w, h) {
                         }
                     });
                     break;
+					
                 case 'btnPoint':
                     interaction = new ol.interaction.Draw({
                         type: 'Point',
@@ -160,25 +182,8 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        const prompt = require('electron-prompt');
-                        prompt({
-                            title: 'Enter the name of the shape',
-                            label: 'Please enter the name of the shape :',
-                            value: 'NY city',
-                            inputAttrs: {
-                                type: 'url'
-                            }
-                        })
-                            .then((r) => {
-                                if (r === null) {
-                                    console.log('user cancelled');
-                                } else {
-                                    e.feature.set('name', r);
-                                }
-                            })
-                            .catch(console.error);
+                        askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
-                        console.log(e.feature);
                     });
                     break;
 
@@ -189,23 +194,7 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        const prompt = require('electron-prompt');
-                        prompt({
-                            title: 'Enter the name of the shape',
-                            label: 'Please enter the name of the shape :',
-                            value: 'NY national street 54 frlm ',
-                            inputAttrs: {
-                                type: 'url'
-                            }
-                        })
-                            .then((r) => {
-                                if (r === null) {
-                                    console.log('user cancelled');
-                                } else {
-                                    e.feature.set('name', r);
-                                }
-                            })
-                            .catch(console.error);
+                        askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
                     });
                     break;
@@ -216,23 +205,7 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     interaction.on('drawend', function (e) {
-                        const prompt = require('electron-prompt');
-                        prompt({
-                            title: 'Enter the name of the shape',
-                            label: 'Please enter the name of this area :',
-                            value: 'The White House',
-                            inputAttrs: {
-                                type: 'url'
-                            }
-                        })
-                            .then((r) => {
-                                if (r === null) {
-                                    console.log('user cancelled');
-                                } else {
-                                    e.feature.set('name', r);
-                                }
-                            })
-                            .catch(console.error);
+                        askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
                     });
                     map.addInteraction(interaction);
@@ -299,8 +272,8 @@ function createMap(link, w, h) {
                             }
                         }
                     );
-
                     break;
+					
                 default:
                     break;
             }
