@@ -303,29 +303,44 @@ function Measurement(feature) {
 	}
 }
 
-function createAttribTable(features) {
-	attribTable = {};
+function renderAttribTable (attribTable) {
 	
-	for(i=0 ; i++ ; features.length) {
-		featureType = feature.getGeometry().getType();
+}
+
+function addFeatureToAttribTable (attribTable, feature) {
+	
+}
+
+function createAttribTableFromFeatures(features) {
+	attribTable = [];
+	
+	for(i=0 ; i<features.length ; i++) {
+		featureType = features[i].getGeometry().getType();
 		switch (featureType) {
 			case 'Polygon':
-				attribTable[""+i] = {
+				attribTable[i] = {
+					'id': i,
 					'name': features[i].get('name'),
-					'area': Measurement(features[i])
+					'area': Math.floor(Measurement(features[i])),
+					'distance': '-'
 				};
 				break;
 				
 			case 'LineString':
-				attribTable[""+i] = {
+				attribTable[i] = {
+					'id': i,
 					'name': features[i].get('name'),
-					'distance': Measurement(features[i])
+					'area': '-',
+					'distance': Math.floor(Measurement(features[i]))
 				};
 				break;
 				
 			case 'Point':
-				attribTable[""+i] = {
-					'name': features[i].get('name')
+				attribTable[i] = {
+					'id': i,
+					'name': features[i].get('name'),
+					'area': '-',
+					'distance': '-'
 				};
 				break;
 				
