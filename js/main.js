@@ -1,39 +1,38 @@
 var formatWFS = new ol.format.WFS();
 
 var formatGML = new ol.format.GML({
-	featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
-	featureType: 'wfs_geom',
-	srsName: 'EPSG:3857'
+    featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+    featureType: 'wfs_geom',
+    srsName: 'EPSG:3857'
 });
 
 var xs = new XMLSerializer();
 
 var sourceWFS = new ol.source.Vector({
-	loader: function (extent) {
-		$.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
-			type: 'GET',
-			data: {
-				service: 'WFS',
-				version: '1.1.0',
-				request: 'GetFeature',
-				typename: 'wfs_geom',
-				srsname: 'EPSG:3857',
-				bbox: extent.join(',') + ',EPSG:3857'
-			}
-		}).done(function (response) {
-			sourceWFS.addFeatures(formatWFS.readFeatures(response));
-			// sourceWFS.clear();
-		});
-	},
-	//strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
-	strategy: ol.loadingstrategy.bbox,
-	projection: 'EPSG:3857'
+    loader: function (extent) {
+        $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+            type: 'GET',
+            data: {
+                service: 'WFS',
+                version: '1.1.0',
+                request: 'GetFeature',
+                typename: 'wfs_geom',
+                srsname: 'EPSG:3857',
+                bbox: extent.join(',') + ',EPSG:3857'
+            }
+        }).done(function (response) {
+            sourceWFS.addFeatures(formatWFS.readFeatures(response));
+            // sourceWFS.clear();
+        });
+    },
+    //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+    strategy: ol.loadingstrategy.bbox,
+    projection: 'EPSG:3857'
 });
 sourceWFS.clear();
 var layerWFS = new ol.layer.Vector({
-	source: sourceWFS
+    source: sourceWFS
 });
-
 
 
 function createMap(link, w, h) {
@@ -124,14 +123,14 @@ function createMap(link, w, h) {
     };
 
     function showSelectLayer() {
-        let features= sourceWFS.getFeatures();
-        for (let i=0; i<features.length; i++) {
-             features[i].setStyle(new ol.style.Style({}));
+        let features = sourceWFS.getFeatures();
+        for (let i = 0; i < features.length; i++) {
+            features[i].setStyle(new ol.style.Style({}));
             let valuePoint = document.getElementById("layer0");
             let valueLine = document.getElementById("layer1");
-            let valuePolygon= document.getElementById("layer2");
+            let valuePolygon = document.getElementById("layer2");
             if ((features[i].getGeometry().getType() === valuePoint.getAttribute("value")) &&
-                valuePoint.checked){
+                valuePoint.checked) {
                 features[i].setStyle(null);
             }
             if ((features[i].getGeometry().getType() === valueLine.getAttribute("value")) &&
@@ -144,26 +143,50 @@ function createMap(link, w, h) {
         }
 
     }
-    $('#layer0').change(function () {showSelectLayer();});
-    $('#layer1').change(function () {showSelectLayer();});
-    $('#layer2').change(function () {showSelectLayer();});
-	
-	function askForShapeName (feature) {
-		const prompt = require('electron-prompt');
-		
-		prompt({
-			title: 'Naming',
-			label: 'Please enter the name of the shape :',
-			value: 'City, District or Road',
-			inputAttrs: {type: 'url'}
-		}).then((r) => {
-			if (r === null) {
-				console.log('user cancelled');
-			} else {
-				feature.set('name', r);
-			}
-		}).catch(console.error);
-	}
+
+    $('#layer0').change(function () {
+        showSelectLayer();
+    });
+    $('#layer1').change(function () {
+        showSelectLayer();
+    });
+    $('#layer2').change(function () {
+        showSelectLayer();
+    });
+
+    function askForShapeName(feature) {
+        const prompt = require('electron-prompt');
+
+        prompt({
+            title: 'Naming',
+            label: 'Please enter the name of the shape :',
+            value: 'City, District or Road',
+            inputAttrs: {type: 'url'}
+        }).then((r) => {
+            if (r === null) {
+                console.log('user cancelled');
+            } else {
+                feature.set('name', r);
+            }
+        }).catch(console.error);
+    }
+
+    function askForShapeStyle(feature) {
+        const prompt = require('electron-prompt');
+
+        prompt({
+            title: 'Naming',
+            label: 'Please enter the name of the shape :',
+            value: 'City, District or Road',
+            inputAttrs: {type: 'url'}
+        }).then((r) => {
+            if (r === null) {
+                console.log('user cancelled');
+            } else {
+                feature.set('name', r);
+            }
+        }).catch(console.error);
+    }
 
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
@@ -199,7 +222,7 @@ function createMap(link, w, h) {
                         }
                     });
                     break;
-					
+
                 case 'btnPoint':
                     interaction = new ol.interaction.Draw({
                         type: 'Point',
@@ -285,12 +308,103 @@ function createMap(link, w, h) {
                         }
                     );
                     break;
-					
+                case 'btnSymbologie':
+
+                    map.on('click', function (e) {
+                        var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+                            //if feature is in the layer you want
+                            return feature;
+                        });
+                        if (feat != null) {
+                            switch (feat.getGeometry().getType()) {
+                                case 'Polygon':
+                                    let colors = build_colors([255, 0, 0], [0, 0, 255], 10);
+                                    let features = sourceWFS.getFeatures();
+                                    counter = 0;
+                                    for (counter; counter < features.length; counter++) {
+                                        if (features[counter].getGeometry().getType() === 'Polygon') {
+                                            var style = new ol.style.Style({
+                                                fill: new ol.style.Fill({color: colors[counter]})
+                                            });
+                                            console.log(counter);
+                                            features[counter].setStyle(style);
+                                        }
+                                    }
+                                    // }
+                                    // features.forEach((feature) => {
+                                    //     if (feature.getGeometry().getType() === 'Polygon')
+                                    //         var style = new ol.style.Style({
+                                    //             fill: new ol.style.Fill({color: colors[counter]})
+                                    //         });
+                                    //     console.log(counter);
+                                    //     feature.setStyle(style);
+                                    // });
+
+                                    // var style = new ol.style.Style({
+                                    //     fill: new ol.style.Fill({color: '#96181e'})
+                                    // fill: new ol.style.Fill({color: '#96181e'})
+                                    // });
+                                    // feat.setStyle(style);
+                                    break;
+                                case 'LineString':
+                                    console.log("LineString");
+                                    console.log(feat.getStyle());
+                                    var style_modify = new ol.style.Style({
+                                        stroke: new ol.style.Stroke({
+                                            width: 6,
+                                            color: [123, 160, 52, 1]
+                                        })
+                                    });
+                                    feat.setStyle(style_modify);
+                                    console.log("Done");
+                                    break;
+                                case 'Point':
+                                    var style = new ol.style.Style({
+                                        image: new ol.style.Circle({
+                                            radius: 5,
+                                            fill: null,
+                                            stroke: new ol.style.Stroke({
+                                                color: [0, 0, 0, .9],
+                                                width: 3
+                                            })
+                                        })
+                                    });
+                                    feat.setStyle(style);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                    break;
                 default:
                     break;
             }
         }
-    );
+    )
+    ;
+    var build_colors = function (start, end, n) {
+
+        //Distance between each color
+        var steps = [
+            (end[0] - start[0]) / n,
+            (end[1] - start[1]) / n,
+            (end[2] - start[2]) / n
+        ];
+
+        //Build array of colors
+        var colors = [start];
+        for (var ii = 0; ii < n - 1; ++ii) {
+            colors.push([
+                Math.floor(colors[ii][0] + steps[0]),
+                Math.floor(colors[ii][1] + steps[1]),
+                Math.floor(colors[ii][2] + steps[2])
+            ]);
+        }
+        colors.push(end);
+
+        return colors;
+    };
 
     function createJstsPolygon(geometryFactory, polygon) {
         var path = polygon.getPath();
