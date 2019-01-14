@@ -160,7 +160,25 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
+                        const prompt = require('electron-prompt');
+                        prompt({
+                            title: 'Enter the name of the shape',
+                            label: 'Please enter the name of the shape :',
+                            value: 'NY city',
+                            inputAttrs: {
+                                type: 'url'
+                            }
+                        })
+                            .then((r) => {
+                                if (r === null) {
+                                    console.log('user cancelled');
+                                } else {
+                                    e.feature.set('name', r);
+                                }
+                            })
+                            .catch(console.error);
                         transactWFS('insert', e.feature);
+                        console.log(e.feature);
                     });
                     break;
 
@@ -171,6 +189,23 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
+                        const prompt = require('electron-prompt');
+                        prompt({
+                            title: 'Enter the name of the shape',
+                            label: 'Please enter the name of the shape :',
+                            value: 'NY national street 54 frlm ',
+                            inputAttrs: {
+                                type: 'url'
+                            }
+                        })
+                            .then((r) => {
+                                if (r === null) {
+                                    console.log('user cancelled');
+                                } else {
+                                    e.feature.set('name', r);
+                                }
+                            })
+                            .catch(console.error);
                         transactWFS('insert', e.feature);
                     });
                     break;
@@ -181,6 +216,23 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     interaction.on('drawend', function (e) {
+                        const prompt = require('electron-prompt');
+                        prompt({
+                            title: 'Enter the name of the shape',
+                            label: 'Please enter the name of this area :',
+                            value: 'The White House',
+                            inputAttrs: {
+                                type: 'url'
+                            }
+                        })
+                            .then((r) => {
+                                if (r === null) {
+                                    console.log('user cancelled');
+                                } else {
+                                    e.feature.set('name', r);
+                                }
+                            })
+                            .catch(console.error);
                         transactWFS('insert', e.feature);
                     });
                     map.addInteraction(interaction);
@@ -195,13 +247,13 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     break;
-					
+
                 case 'btnDeleteAll':
                     interaction = new ol.interaction.Select();
                     var features = layerWFS.getSource().getFeatures();
-                    features.forEach((feature)=> interaction.getFeatures().push(feature));
+                    features.forEach((feature) => interaction.getFeatures().push(feature));
                     interaction.getFeatures().on('add', function () {
-                        for (var i=0; i<features.length; i++) transactWFS('delete', features[i]);
+                        for (var i = 0; i < features.length; i++) transactWFS('delete', features[i]);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
                         layerWFS.getSource().clear();
@@ -210,15 +262,15 @@ function createMap(link, w, h) {
                     break;
 
                 case 'showLayer':
-                    var features= sourceWFS.getFeatures();
-                    for (var i=0; i<features.length; i++) {
-                        console.log("type of feature: "+features[i].getGeometry().getType());
+                    var features = sourceWFS.getFeatures();
+                    for (var i = 0; i < features.length; i++) {
+                        console.log("type of feature: " + features[i].getGeometry().getType());
                         if (features[i].getGeometry().getType() != 'Polygon') {
-							features[i].setStyle(new ol.style.Style({}));
-						}
+                            features[i].setStyle(new ol.style.Style({}));
+                        }
                         else {
-							features[i].setStyle(null);
-						}
+                            features[i].setStyle(null);
+                        }
                     }
                     break;
 
@@ -239,10 +291,10 @@ function createMap(link, w, h) {
                                     intersection = polyIntersectsPoly(geomA, geomB);
                                     if (intersection === true) {
                                         alert("There is intersection");
-                                    }else {
+                                    } else {
                                         alert("There is no intersection");
                                     }
-                                    selected=[];
+                                    selected = [];
                                 }
                             }
                         }
@@ -275,9 +327,9 @@ function createMap(link, w, h) {
             )
         ).geometry;
         var geomB = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
-				new ol.Feature({
-					geometry: polygeomB
-				})
+            new ol.Feature({
+                geometry: polygeomB
+            })
             )
         ).geometry;
         return geomA.intersects(geomB);
@@ -288,44 +340,6 @@ function createMap(link, w, h) {
         coordinateFormat: ol.coordinate.createStringXY(4),
         projection: 'EPSG:4326'
     });
-	
-	mouse_position.setPosition();
-	
-    var radius = 5000;//the distance of the buffer
-    // map.on('click', function (e) {
-    //     var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-    //         //if feature is in the layer you want
-    //         return feature;
-    //     });
-    //     if (feat != null) {
-    //         var point = feat.getGeometry().getCoordinates();
-    //
-    //         if (feat.getGeometry().getType() === 'Polygon') {
-    //             console.log("polygon:", point);
-    //         } else if (feat.getGeometry().getType() === 'Point') {
-    //             console.log("Point:", point);
-    //         } else if (feat.getGeometry().getType() === 'LineString') {
-    //             console.log("LineString:", point);
-    //         } else
-    //             console.log("what's this!!!");
-    //     }
-    // });
-// var polyFeatures = mylayer.getSource();
-//
-// var coordsMulti = [];
-// var coordsSingle = [];
-// // polyFeatures.forEachFeature(function (polyFeature) {
-// //     console.log("1");
-//     // if (polyFeatures[0].getGeometry().getType() === 'Polygon') {
-//         // this will get you all polygon coordinates
-//         console.log("222");
-//         coordsMulti.push(polyFeatures.getGeometry().getCoordinates());
-//
-//         // this will get you central coordinate of polygon
-//         coordsSingle.push(polyFeatures[0].getGeometry().getInteriorPoint());
-//         console.log(coordsMulti,coordsSingle);
-//     // }
-// // });
 
     map.addControl(mouse_position);
 
