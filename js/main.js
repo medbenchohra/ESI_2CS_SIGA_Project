@@ -205,11 +205,19 @@ function createMap(link, w, h) {
                         interaction.getFeatures().clear();
                         layerWFS.getSource().clear();
                     });
-
-                    //for (var i=0; i<nassim.lenght; i++) transactWFS('delete', nassim[i]);
-
                     map.addInteraction(interaction);
                     break;
+
+                case 'showLayer':
+                    var features= sourceWFS.getFeatures();
+                    for (var i=0; i<features.length; i++) {
+                        console.log("type of feature: "+features[i].getGeometry().getType());
+                        if (features[i].getGeometry().getType() != 'Polygon') {features[i].setStyle(new ol.style.Style({}));}
+                        else { features[i].setStyle(null);}
+                    }
+                    break;
+
+
                 case 'btnOperations':
                     counter = 0;
                     var selected = [];

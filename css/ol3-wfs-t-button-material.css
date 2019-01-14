@@ -32,10 +32,15 @@
     top: 10px;
     left: 440px;
 }
-#btnOperations{
+#showLayer {
     position: absolute;
     top: 10px;
     left: 500px;
+}
+#btnOperations{
+    position: absolute;
+    top: 10px;
+    left: 560px;
 }
 .btn-active {
     background-color: #38adc7 !important;
