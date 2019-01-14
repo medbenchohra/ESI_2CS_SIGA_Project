@@ -240,9 +240,31 @@ function createMap(link, w, h) {
                             }
                         }
                     );
-
                     break;
                 case 'btnSelect':
+                    map.on('click', function (e) {
+                        var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+                            //if feature is in the layer you want
+                            return feature;
+                        });
+                        if (feat != null) {
+                            clear();
+                            var formatArea = function(polygon) {
+                                var area = getArea(polygon);
+                                var output;
+                                if (area > 10000) {
+                                    output = (Math.round(area / 1000000 * 100) / 100) +
+                                        ' ' + 'km<sup>2</sup>';
+                                } else {
+                                    output = (Math.round(area * 100) / 100) +
+                                        ' ' + 'm<sup>2</sup>';
+                                }
+                                return output;
+                            };
+                            console.log(formatArea(feat));
+                            console.log(feat.getGeometry().getType());
+                        }
+                    });
                     break;
                 default:
                     break;
