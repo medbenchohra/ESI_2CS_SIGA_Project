@@ -1,40 +1,43 @@
+
+var formatWFS = new ol.format.WFS();
+
+var formatGML = new ol.format.GML({
+	featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+	featureType: 'wfs_geom',
+	srsName: 'EPSG:3857'
+});
+
+var xs = new XMLSerializer();
+
+var sourceWFS = new ol.source.Vector({
+	loader: function (extent) {
+		$.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+			type: 'GET',
+			data: {
+				service: 'WFS',
+				version: '1.1.0',
+				request: 'GetFeature',
+				typename: 'wfs_geom',
+				srsname: 'EPSG:3857',
+				bbox: extent.join(',') + ',EPSG:3857'
+			}
+		}).done(function (response) {
+			sourceWFS.addFeatures(formatWFS.readFeatures(response));
+			// sourceWFS.clear();
+		});
+	},
+	//strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+	strategy: ol.loadingstrategy.bbox,
+	projection: 'EPSG:3857'
+});
+sourceWFS.clear();
+var layerWFS = new ol.layer.Vector({
+	source: sourceWFS
+});
+
+
+
 function createMap(link, w, h) {
-    var formatWFS = new ol.format.WFS();
-
-    var formatGML = new ol.format.GML({
-        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
-        featureType: 'wfs_geom',
-        srsName: 'EPSG:3857'
-    });
-
-    var xs = new XMLSerializer();
-
-    var sourceWFS = new ol.source.Vector({
-        loader: function (extent) {
-            $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
-                type: 'GET',
-                data: {
-                    service: 'WFS',
-                    version: '1.1.0',
-                    request: 'GetFeature',
-                    typename: 'wfs_geom',
-                    srsname: 'EPSG:3857',
-                    bbox: extent.join(',') + ',EPSG:3857'
-                }
-            }).done(function (response) {
-                sourceWFS.addFeatures(formatWFS.readFeatures(response));
-                // sourceWFS.clear();
-            });
-        },
-        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
-        strategy: ol.loadingstrategy.bbox,
-        projection: 'EPSG:3857'
-    });
-    sourceWFS.clear();
-    var layerWFS = new ol.layer.Vector({
-        source: sourceWFS
-    });
-
     var interaction;
 
     var interactionSelectPointerMove = new ol.interaction.Select({
@@ -52,12 +55,14 @@ function createMap(link, w, h) {
     var interactionSnap = new ol.interaction.Snap({
         source: layerWFS.getSource()
     });
+
     var scaleLineControl = new ol.control.ScaleLine();
     var pixelProjection = new ol.proj.Projection({
         code: 'pixel',
         units: 'pixels',
         extent: [0, 0, w, h]
     });
+
     var mysource = new ol.source.ImageStatic({
         attributions: [
             new ol.Attribution({
@@ -69,6 +74,7 @@ function createMap(link, w, h) {
         projection: pixelProjection,
         imageExtent: pixelProjection.getExtent()
     });
+
     var mylayer = new ol.layer.Image({
         source: mysource
     });
@@ -198,23 +204,35 @@ function createMap(link, w, h) {
                     break;
                 case 'btnDeleteAll':
                     /*-----------------------------*/
+					
+					var features = layerWFS.getSource().getFeatures();
+//					console.log("layer before: ", layerWFS.getSource().getFeatures());
+                    features.forEach((feature) => layerWFS.getSource().removeFeature(feature));
+//					console.log("layer after: ", layerWFS.getSource().getFeatures());
+					
+//					sourceWFS.clear(true);
+					
+					
+//                    var features = layerWFS.getSource().getFeatures();
+//                    features.forEach((feature) => {
+//						
+//						/* -- switch version -- */
+//						
+//						featureType = feature.getGeometry().getType();
+//						switch (featureType) {
+//							case 'Polygon':
+//                                layerWFS.getSource().removeFeature(feature);
+//								break;
+//                            case 'LineString':
+//                                layerWFS.getSource().removeFeature(feature);
+//								break;
+//							case 'Point':
+//                                layerWFS.getSource().removeFeature(feature);
+//								break;
+//							default:
+//                                console.log("there is another Goe type ?", feature.getGeometry().getType());
+//						}
 
-                    var features = layerWFS.getSource().getFeatures();
-                    features.forEach((feature) => {
-                            if (feature.getGeometry().getType() === 'Polygon') {
-                                layerWFS.getSource().removeFeature(feature);
-
-                            } else if (feature.getGeometry().getType() === 'LineString') {
-                                layerWFS.getSource().removeFeature(feature);
-
-                            }
-                            else if (feature.getGeometry().getType() === 'Point') {
-                                layerWFS.getSource().removeFeature(feature);
-                            } else {
-                                console.log("there is another Goe type ?", feature.getGeometry().getType());
-                            }
-                        }
-                    );
                     break;
                 default:
                     break;
@@ -269,7 +287,7 @@ function createMap(link, w, h) {
 
 }
 
-// createMap('./data/Dz_Batna_map.png', 1280, 930);
+createMap('./data/Dz_Batna_map.png', 1280, 930);
 
 //----------------------------------------------------------//
 
