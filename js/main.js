@@ -196,23 +196,19 @@ function createMap(link, w, h) {
                     map.addInteraction(interaction);
                     break;
                 case 'btnDeleteAll':
-                    // map.removeLayer(map.getLayers().getArray()[1]);
-                    var features = layerWFS.getSource().getFeatures();
-                    features.forEach((feature) => {
-                            if (feature.getGeometry().getType() === 'Polygon') {
-                                layerWFS.getSource().removeFeature(feature);
+                    interaction = new ol.interaction.Select();
+                    var nassim = layerWFS.getSource().getFeatures();
+                    nassim.forEach((feature)=> interaction.getFeatures().push(feature));
+                    interaction.getFeatures().on('add', function () {
+                        for (var i=0; i<nassim.length; i++) transactWFS('delete', nassim[i]);
+                        interactionSelectPointerMove.getFeatures().clear();
+                        interaction.getFeatures().clear();
+                        layerWFS.getSource().clear();
+                    });
 
-                            } else if (feature.getGeometry().getType() === 'LineString') {
-                                layerWFS.getSource().removeFeature(feature);
+                    //for (var i=0; i<nassim.lenght; i++) transactWFS('delete', nassim[i]);
 
-                            }
-                            else if (feature.getGeometry().getType() === 'Point') {
-                                layerWFS.getSource().removeFeature(feature);
-                            } else {
-                                console.log("there is another Goe type ?", feature.getGeometry().getType());
-                            }
-                        }
-                    );
+                    map.addInteraction(interaction);
                     break;
                 case 'btnOperations':
                     counter = 0;
