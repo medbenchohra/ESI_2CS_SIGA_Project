@@ -1,4 +1,3 @@
-function createMap(link, w, h) {
     var formatWFS = new ol.format.WFS();
 
     var formatGML = new ol.format.GML({
@@ -30,10 +29,13 @@ function createMap(link, w, h) {
         strategy: ol.loadingstrategy.bbox,
         projection: 'EPSG:3857'
     });
+	
     sourceWFS.clear();
     var layerWFS = new ol.layer.Vector({
         source: sourceWFS
     });
+
+function createMap(link, w, h) {
 
     var interaction;
 
@@ -52,12 +54,14 @@ function createMap(link, w, h) {
     var interactionSnap = new ol.interaction.Snap({
         source: layerWFS.getSource()
     });
+	
     var scaleLineControl = new ol.control.ScaleLine();
     var pixelProjection = new ol.proj.Projection({
         code: 'pixel',
         units: 'pixels',
         extent: [0, 0, w, h]
     });
+	
     var mysource = new ol.source.ImageStatic({
         attributions: [
             new ol.Attribution({
@@ -69,6 +73,7 @@ function createMap(link, w, h) {
         projection: pixelProjection,
         imageExtent: pixelProjection.getExtent()
     });
+	
     var mylayer = new ol.layer.Image({
         source: mysource
     });
@@ -311,10 +316,39 @@ function createMap(link, w, h) {
 // // });
 
     map.addControl(mouse_position);
-
-
+	
 }
 
+function createAttribTable(features) {
+	attribTable = {}
+	attribTable.scheme = {'id','name','distance','area'}
+	
+	for(i=0 ; i++ ; features.length) {
+		featureType = feature.getGeometry().getType();
+//						switch (featureType) {
+//							case 'Polygon':
+//                                layerWFS.getSource().removeFeature(feature);
+//								break;
+//                            case 'LineString':
+//                                layerWFS.getSource().removeFeature(feature);
+//								break;
+//							case 'Point':
+//                                layerWFS.getSource().removeFeature(feature);
+//								break;
+//							default:
+//                                console.log("there is another Goe type ?", feature.getGeometry().getType());
+//						}
+		attribTable[""+i] = {
+			'name': features[i].get('name'),
+			'distance': calculateDistance(features[i].getGeometry().getCoordinates()),
+			'area': calculateArea(features[i].getGeometry().getCoordinates()),
+		}
+	}
+
+	
+	return attribTable;
+}
+ 
 createMap('./data/Dz_Batna_map.png', 1280, 930);
 
 //----------------------------------------------------------//
