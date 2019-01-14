@@ -435,5 +435,3 @@ App.init = function () {
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
 }();
-
-// ignore this comment
