@@ -1,56 +1,62 @@
 #btnPoint {
     position: absolute;
-    right:  20px;
+    right: 20px;
     top: 140px;
 }
 
 #btnLine {
     position: absolute;
-    right:  20px;
+    right: 20px;
     top: 200px;
 }
 
 #btnArea {
     position: absolute;
-    right:  20px;
+    right: 20px;
     top: 260px;
 }
 
 #btnEdit {
     position: absolute;
-    right:  20px;
+    right: 20px;
     top: 320px;
 }
 
 #btnDelete {
 
     position: absolute;
-    right:  20px;
+    right: 20px;
     top: 380px;
 }
 
 #btnDeleteAll {
     position: absolute;
-    right:  20px;
-    top: 440px;
+    top: 10px;
+    left: 440px;
 }
 
-#btnOperations{
+#showLayer {
     position: absolute;
-    right:  140px;
+    top: 10px;
+    left: 700px;
+}
+
+#btnOperations {
+    position: absolute;
+    right: 140px;
     top: 10px;
 }
-#btnSymbologie{
+
+#btnSymbologie {
     position: absolute;
-    right:  200px;
+    right: 200px;
     top: 10px;
 }
 
 #showLayer {
-	background-color: cadetblue;
-	border-radius: 15px;
-	padding: 10px 15px 15px 15px;
-/*	margin: 15px;*/
+    background-color: cadetblue;
+    border-radius: 15px;
+    padding: 10px 15px 15px 15px;
     position: absolute;
     top: 20px;
     left: 80px;
@@ -94,3 +100,20 @@
     transition: 0.5s;
 }
 
+.ol-attribution.ol-uncollapsible img {
+    display: none;
+}
+
+.ol-mouse-position {
+    /*top: auto;*/
+    bottom: 200em;
+    /*top: 500px;*/
+}
+
+#coords {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    right: 50px;
+    z-index: 1;
+}
