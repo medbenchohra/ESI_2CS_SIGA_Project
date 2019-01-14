@@ -195,16 +195,18 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     break;
+					
                 case 'btnDeleteAll':
                     interaction = new ol.interaction.Select();
-                    var nassim = layerWFS.getSource().getFeatures();
-                    nassim.forEach((feature)=> interaction.getFeatures().push(feature));
+                    var features = layerWFS.getSource().getFeatures();
+                    features.forEach((feature)=> interaction.getFeatures().push(feature));
                     interaction.getFeatures().on('add', function () {
-                        for (var i=0; i<nassim.length; i++) transactWFS('delete', nassim[i]);
+                        for (var i=0; i<features.length; i++) transactWFS('delete', features[i]);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
                         layerWFS.getSource().clear();
                     });
+<<<<<<< HEAD
                     map.addInteraction(interaction);
                     break;
 
@@ -218,6 +220,12 @@ function createMap(link, w, h) {
                     break;
 
 
+=======
+
+                    map.addInteraction(interaction);
+                    break;
+					
+>>>>>>> 330bc3009a3d98fb574ca4494332ce0a81e81d46
                 case 'btnOperations':
                     counter = 0;
                     var selected = [];
@@ -249,8 +257,7 @@ function createMap(link, w, h) {
                     break;
             }
         }
-    )
-    ;
+    );
 
     function createJstsPolygon(geometryFactory, polygon) {
         var path = polygon.getPath();
