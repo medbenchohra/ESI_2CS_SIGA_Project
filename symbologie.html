@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+ 
+    </head>
+    <body>
+    	
+    	<script>
+    		///calcul la taille du pt
+			var taille = 5;//recupériwha mla fenetre
+			var Y=[10,20,15,30,12,9,25];
+			var X=[];
+			
+			var x ;
+			if(taille==1) x=Math.max.apply(null,Y);
+			else x=Math.floor((Math.max.apply(null,Y)-Math.min.apply(null,Y))/(taille-1));
+			
+			alert("x "+x);
+
+			for (var i =  0; i < Y.length; i++) {
+				X[i]=Math.floor(Y[i]/x);
+			}
+			//fin calcul
+
+			
+			//mise à jour du fichier json
+/*
+			//récupérer fichier json
+			obj = JSON.parse(text);
+			for (var i =  0; i < X.length; i++) {
+				obj.features[3].taille=X[i];
+			}
+*/			//fin mise à jour du fichier json				
+			//redessiner les pts
+
+		</script>
+    </body>
+ </html> 
