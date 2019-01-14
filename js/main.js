@@ -304,8 +304,7 @@ function Measurement(feature) {
 }
 
 function createAttribTable(features) {
-	attribTable = {}
-	attribTable.scheme = {'id','name','distance','area'}
+	attribTable = {};
 	
 	for(i=0 ; i++ ; features.length) {
 		featureType = feature.getGeometry().getType();
@@ -314,20 +313,20 @@ function createAttribTable(features) {
 				attribTable[""+i] = {
 					'name': features[i].get('name'),
 					'area': Measurement(features[i])
-				}
+				};
 				break;
 				
 			case 'LineString':
 				attribTable[""+i] = {
 					'name': features[i].get('name'),
 					'distance': Measurement(features[i])
-				}
+				};
 				break;
 				
 			case 'Point':
 				attribTable[""+i] = {
 					'name': features[i].get('name')
-				}
+				};
 				break;
 				
 			default:
