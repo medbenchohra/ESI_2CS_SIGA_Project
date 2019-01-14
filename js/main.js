@@ -204,16 +204,14 @@ function createMap(link, w, h) {
                         for (var i=0; i<features.length; i++) transactWFS('delete', features[i]);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
-                        layerWFS.getSource().clear();
+                        sourceWFS.clear();
                     });
-
                     map.addInteraction(interaction);
                     break;
 					
                 case 'btnOperations':
                     counter = 0;
                     var selected = [];
-                    // var geomA = e.feature.getGeometry();
                     map.on('click', function (e) {
                             var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
                                 //if feature is in the layer you want
