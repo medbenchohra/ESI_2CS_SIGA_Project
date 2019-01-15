@@ -30,34 +30,7 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        Start Bootstrap
-                    </a>
-                </li>
-                <li>
-                    <a href="#">Dashboard</a>
-                </li>
-                <li>
-                    <a href="#">Shortcuts</a>
-                </li>
-                <li>
-                    <a href="#">Overview</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Services</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-            </ul>
+			<div id="attribTable"></div>
         </div>
         <!-- /#sidebar-wrapper -->
 
@@ -109,15 +82,11 @@
 					</div>
 
 					<div style="font-weight: bold; margin-bottom: 15px;" id="coords"></div>
-			
-					<div id="attribTable">
-			
-					</div>
 				
 				</div>
 
 				<div style="position: absolute; bottom: 0px; left: 50px;" >
-					<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
+					<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Attributes Table</a>
 				</div>
             </div>
         </div>
@@ -153,6 +122,9 @@
 
 	<!-- Window Resize Script -->
     <script>
+		// Create an empty attrib table
+		createEmptyAttribTable();
+
 		document.getElementById("page-content-wrapper").style.height = "100%";
 		document.getElementById("sub-page-content-wrapper").style.height = "100%";
 		document.getElementById("map-wrapper").style.height = "100%";
@@ -162,11 +134,10 @@
 
 		resizeWindow();
 
-
 		function resizeWindow() {
 			
 			// if the sideBar is visible we retract it's size, else we add it
-			if (sideBarToggleCounter%2 == 1) w = (window.innerWidth - 250) + "px";
+			if (sideBarToggleCounter%2 == 1) w = (window.innerWidth - 300) + "px";
 			else w = window.innerWidth + "px";
 			document.getElementById("map").style.width = w;
 

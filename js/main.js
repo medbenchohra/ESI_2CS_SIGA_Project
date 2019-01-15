@@ -1,3 +1,7 @@
+var id = 0;
+
+var dialogs = require('dialogs')();
+
 var formatWFS = new ol.format.WFS();
 
 var formatGML = new ol.format.GML({
@@ -156,40 +160,6 @@ function createMap(link, w, h) {
         showSelectLayer();
     });
 
-    function askForShapeName(feature) {
-        const prompt = require('electron-prompt');
-
-        prompt({
-            title: 'Naming',
-            label: 'Please enter the name of the shape :',
-            value: 'City, District or Road',
-            inputAttrs: {type: 'url'}
-        }).then((r) => {
-            if (r === null) {
-                console.log('user cancelled');
-            } else {
-                feature.set('name', r);
-            }
-        }).catch(console.error);
-    }
-
-    function askForShapeStyle(feature) {
-        const prompt = require('electron-prompt');
-
-        prompt({
-            title: 'Naming',
-            label: 'Please enter the name of the shape :',
-            value: 'City, District or Road',
-            inputAttrs: {type: 'url'},
-            height: 200
-        }).then((r) => {
-            if (r === null) {
-                console.log('user cancelled');
-            } else {
-                feature.set('name', r);
-            }
-        }).catch(console.error);
-    }
 
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
@@ -233,8 +203,11 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        askForShapeName(e.feature);
-                        transactWFS('insert', e.feature);
+                        dialogs.prompt('Name', function(input) {
+                            addFeatureToAttribTable(id, e.feature, input);
+                            id++;
+                            transactWFS('insert', e.feature);
+                        });
                     });
                     break;
 
@@ -245,7 +218,7 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        askForShapeName(e.feature);
+                        e.feature.set('name',askForShapeName());
                         transactWFS('insert', e.feature);
                     });
                     break;
@@ -256,7 +229,7 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     interaction.on('drawend', function (e) {
-                        askForShapeName(e.feature);
+                        e.feature.set('name',askForShapeName());
                         transactWFS('insert', e.feature);
                     });
                     map.addInteraction(interaction);
@@ -425,34 +398,7 @@ function createMap(link, w, h) {
 
         return colors;
     };
-    // var build_colors4 = function (start, end, n) {
-    //
-    //     //Distance between each color
-    //     a = (end[0] - start[0]);
-    //     if (a < 0) a = -a;
-    //     b = (end[1] - start[1]);
-    //     if (b < 0) b = -b;
-    //     c = (end[2] - start[2]);
-    //     if (c < 0) c = -c;
-    //     d = (end[3] - start[3]);
-    //     if (d < 0) d = -d;
-    //     d = 0;
-    //     var steps = [a / n, b / n, c / n, d / n];
-    //
-    //     //Build array of colors
-    //     var colors = [start];
-    //     for (var ii = 0; ii < n - 1; ++ii) {
-    //         colors.push([
-    //             Math.floor(colors[ii][0] + steps[0]),
-    //             Math.floor(colors[ii][1] + steps[1]),
-    //             Math.floor(colors[ii][2] + steps[2]),
-    //             Math.floor(colors[ii][3] + steps[3])
-    //         ]);
-    //     }
-    //     colors.push(end);
-    //
-    //     return colors;
-    // };
+
 
     function polyIntersectsPoly(polygeomA, polygeomB) {
         var jsts = require('jsts');
@@ -499,18 +445,66 @@ function Measurement(feature) {
     }
 }
 
-function showAttribTable() {
-    $(document.getElementById("attribTable")).show()
+function createEmptyAttribTable() {
+    attribTable[0] = {
+        'id': '',
+        'name': '',
+        'area': '',
+        'distance': ''
+    };
+
+    $(document).ready(function () {
+        var table = '<table id="attrib_table" class="table table-striped">';
+        table += '<tbody id="tab-body">';
+        table += '<tr class="tab-scheme">';
+        var flag = 0;
+        $.each(attribTable[0], function (index, value) {
+            table += '<th>' + index + '</th>';
+        });
+        table += '</tr>';
+        table += '</tbody>';
+        table += '</table>';
+        $(document.getElementById("attribTable")).html(table);
+
+        console.log(document.getElementById("tab-body").innerHTML);
+    });
+
 }
 
-function hideAttribTable() {
-    $(document.getElementById("attribTable")).hide()
+function addFeatureToAttribTable(id, feature, name) {
+    var table = document.getElementById("tab-body").innerHTML
+    featureType = feature.getGeometry().getType();
+
+    table += '<tr>';
+    table += '<td>' + id + '</td>';
+    table += '<td>' + name + '</td>';
+
+    switch (featureType) {
+        case 'Polygon':
+            table += '<td>' + Math.floor(Measurement(features[i])) + '</td>';
+            table += '<td>' + "-" + '</td>';
+            break;
+
+        case 'LineString':
+            table += '<td>' + "-" + '</td>';
+            table += '<td>' + Math.floor(Measurement(features[i])) + '</td>';
+            break;
+
+        case 'Point':
+            table += '<td>' + "-" + '</td>';
+            table += '<td>' + "-" + '</td>';
+            break;
+    }
+
+    table += '<tr>';
+
+    document.getElementById("tab-body").innerHTML = table;
 }
 
 function renderAttribTable(attribTable) {
     $(document).ready(function () {
         var table = '<table class="table table-striped">';
-        table += '<tr>';
+        table += '<tr class="tab-scheme">';
         var flag = 0;
         $.each(attribTable[0], function (index, value) {
             table += '<th>' + index + '</th>';
@@ -528,50 +522,8 @@ function renderAttribTable(attribTable) {
     });
 }
 
-function addFeatureToAttribTable(attribTable, feature) {
 
-}
 
-function createAttribTableFromFeatures(features) {
-    attribTable = [];
-
-    for (i = 0; i < features.length; i++) {
-        featureType = features[i].getGeometry().getType();
-        switch (featureType) {
-            case 'Polygon':
-                attribTable[i] = {
-                    'id': i,
-                    'name': features[i].get('name'),
-                    'area': Math.floor(Measurement(features[i])),
-                    'distance': '-'
-                };
-                break;
-
-            case 'LineString':
-                attribTable[i] = {
-                    'id': i,
-                    'name': features[i].get('name'),
-                    'area': '-',
-                    'distance': Math.floor(Measurement(features[i]))
-                };
-                break;
-
-            case 'Point':
-                attribTable[i] = {
-                    'id': i,
-                    'name': features[i].get('name'),
-                    'area': '-',
-                    'distance': '-'
-                };
-                break;
-
-            default:
-                console.log("there is another Goe type ?", feature.getGeometry().getType());
-        }
-    }
-
-    return attribTable;
-}
 
 createMap('./data/Dz_Batna_map.png', 1280, 930);
 
@@ -586,6 +538,7 @@ var $$ = document.querySelector.bind(document);
 
 //APP
 var App = {};
+
 App.init = function () {
     //Init
     function handleFileSelect(evt) {

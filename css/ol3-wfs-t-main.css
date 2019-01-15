@@ -9,7 +9,31 @@ body {
 	overflow: hidden; /* disable scroll */  
 }
 
+#attribTable {
+    text-shadow: 2px 2px grey;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11pt;
+    color: whitesmoke;
+    background-color:#8699AA;
+    justify-content: center;
+    align-items: center;
+}
 
+th {
+    text-indent: 5px;
+    text-transform: capitalize;
+    color: whitesmoke;
+    font: bold;
+    background-color: darkcyan;
+}
+
+tr {
+    text-align: center;
+}
+
+tr:hover {
+    background-color: darkolivegreen;
+}
 
 #map-wrapper{
     height: 100%;
