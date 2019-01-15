@@ -36,6 +36,9 @@ var layerWFS = new ol.layer.Vector({
 
 
 function createMap(link, w, h) {
+    check_the_checkbox("layer0");
+    check_the_checkbox("layer1");
+    check_the_checkbox("layer2");
     var interaction;
 
     var interactionSelectPointerMove = new ol.interaction.Select({
@@ -124,29 +127,9 @@ function createMap(link, w, h) {
         });
     };
 
-    function showSelectLayer() {
-        let features = sourceWFS.getFeatures();
-        for (let i = 0; i < features.length; i++) {
-            features[i].setStyle(new ol.style.Style({}));
-            let valuePoint = document.getElementById("layer0");
-            let valueLine = document.getElementById("layer1");
-            let valuePolygon = document.getElementById("layer2");
-            if ((features[i].getGeometry().getType() === valuePoint.getAttribute("value")) &&
-                valuePoint.checked) {
-                features[i].setStyle(null);
-            }
-            if ((features[i].getGeometry().getType() === valueLine.getAttribute("value")) &&
-                valueLine.checked) {
-                features[i].setStyle(null);
-            }
-            if ((features[i].getGeometry().getType() == valuePolygon.getAttribute("value")) && valuePolygon.checked) {
-                features[i].setStyle(null);
-            }
-        }
-
-    }
 
     $('#layer0').change(function () {
+        console.log("changed!!!");
         showSelectLayer();
     });
     $('#layer1').change(function () {
@@ -346,7 +329,7 @@ function createMap(link, w, h) {
             }
         }
     );
-    
+
     var style_LineString = function () {
         let features = sourceWFS.getFeatures();
         features.forEach((feature) => {
@@ -387,6 +370,7 @@ function createMap(link, w, h) {
             }
         }
     };
+
     var style_polygons = function () {
         let features = sourceWFS.getFeatures();
         counter = 0;
@@ -481,6 +465,36 @@ function createMap(link, w, h) {
     var radius = 5000;//the distance of the buffer
 
     map.addControl(mouse_position);
+
+    map.on('pointermove', function () {
+        showSelectLayer();
+    });
+
+}
+
+let check_the_checkbox = function (id) {
+    document.getElementById(id).checked = true;
+};
+
+function showSelectLayer() {
+    let features = sourceWFS.getFeatures();
+    for (let i = 0; i < features.length; i++) {
+        features[i].setStyle(new ol.style.Style({}));
+        let valuePoint = document.getElementById("layer0");
+        let valueLine = document.getElementById("layer1");
+        let valuePolygon = document.getElementById("layer2");
+        if ((features[i].getGeometry().getType() === valuePoint.getAttribute("value")) &&
+            valuePoint.checked) {
+            features[i].setStyle(null);
+        }
+        if ((features[i].getGeometry().getType() === valueLine.getAttribute("value")) &&
+            valueLine.checked) {
+            features[i].setStyle(null);
+        }
+        if ((features[i].getGeometry().getType() == valuePolygon.getAttribute("value")) && valuePolygon.checked) {
+            features[i].setStyle(null);
+        }
+    }
 
 }
 
