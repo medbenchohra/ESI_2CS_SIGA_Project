@@ -311,7 +311,6 @@ function createMap(link, w, h) {
 
                     break;
                 case 'btnSymbologie':
-                    print();
                     map.on('click', function (e) {
                         var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
                             //if feature is in the layer you want
@@ -338,8 +337,11 @@ function createMap(link, w, h) {
                 case 'btnSelect':
                     break;
 
-                default:
+                case 'btnExport':
+                    print();
                     break;
+
+                default:
             }
         }
     );

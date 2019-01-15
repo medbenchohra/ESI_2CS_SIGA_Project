@@ -31,8 +31,14 @@
 
 #btnDeleteAll {
     position: absolute;
-    top: 10px;
-    left: 440px;
+    right: 20px;
+    top: 440px;
+}
+
+#btnExport {
+    position: absolute;
+    right: 20px;
+    top: 600px;   
 }
 
 #showLayer {
@@ -53,7 +59,17 @@
     top: 10px;
 }
 
+#btnSelect {
+    position: absolute;
+    right: 260px;
+    top: 10px;
+}
+
+
+
 #showLayer {
+    font-weight: bold;
+    font-size: 14pt;
     background-color: cadetblue;
     border-radius: 15px;
     padding: 10px 15px 15px 15px;
