@@ -186,7 +186,7 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        dialogs.prompt('Name', function(input) {
+                        dialogs.prompt('Enter a name for the drawn shape', function(input) {
                             addFeatureToAttribTable(id, e.feature, input);
                             id++;
                             transactWFS('insert', e.feature);
@@ -201,7 +201,7 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        dialogs.prompt('Name', function(input) {
+                        dialogs.prompt('Enter a name for the drawn shape', function(input) {
                             addFeatureToAttribTable(id, e.feature, input);
                             id++;
                             transactWFS('insert', e.feature);
@@ -215,7 +215,7 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     interaction.on('drawend', function (e) {
-                        dialogs.prompt('Name', function(input) {
+                        dialogs.prompt('Enter a name for the drawn shape', function(input) {
                             addFeatureToAttribTable(id, e.feature, input);
                             id++;
                             transactWFS('insert', e.feature);
