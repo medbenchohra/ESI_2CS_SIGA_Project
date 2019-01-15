@@ -218,8 +218,11 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        e.feature.set('name',askForShapeName());
-                        transactWFS('insert', e.feature);
+                        dialogs.prompt('Name', function(input) {
+                            addFeatureToAttribTable(id, e.feature, input);
+                            id++;
+                            transactWFS('insert', e.feature);
+                        });
                     });
                     break;
 
@@ -229,8 +232,11 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     interaction.on('drawend', function (e) {
-                        e.feature.set('name',askForShapeName());
-                        transactWFS('insert', e.feature);
+                        dialogs.prompt('Name', function(input) {
+                            addFeatureToAttribTable(id, e.feature, input);
+                            id++;
+                            transactWFS('insert', e.feature);
+                        });
                     });
                     map.addInteraction(interaction);
                     break;
@@ -268,7 +274,7 @@ function createMap(link, w, h) {
                             });
                             if (feat != null) {
                                 selected.push(feat);
-                                if (feat.getGeometry().getType() === 'Polygon' && selected.length === 2) {
+                                if (selected.length === 2) {
                                     var geomA = selected[0].getGeometry();
                                     var geomB = selected[1].getGeometry();
                                     intersection = polyIntersectsPoly(geomA, geomB);
@@ -471,6 +477,14 @@ function createEmptyAttribTable() {
 
 }
 
+function saveCurrentSessionAttribTable() {
+    var table = document.getElementById("tab-body").innerHTML;
+}
+
+function loadPreviousSessionAttribTable() {
+
+}
+
 function addFeatureToAttribTable(id, feature, name) {
     var table = document.getElementById("tab-body").innerHTML
     featureType = feature.getGeometry().getType();
@@ -481,13 +495,13 @@ function addFeatureToAttribTable(id, feature, name) {
 
     switch (featureType) {
         case 'Polygon':
-            table += '<td>' + Math.floor(Measurement(features[i])) + '</td>';
+            table += '<td>' + Math.floor(Measurement(feature)) + '</td>';
             table += '<td>' + "-" + '</td>';
             break;
 
         case 'LineString':
             table += '<td>' + "-" + '</td>';
-            table += '<td>' + Math.floor(Measurement(features[i])) + '</td>';
+            table += '<td>' + Math.floor(Measurement(feature)) + '</td>';
             break;
 
         case 'Point':
@@ -500,28 +514,6 @@ function addFeatureToAttribTable(id, feature, name) {
 
     document.getElementById("tab-body").innerHTML = table;
 }
-
-function renderAttribTable(attribTable) {
-    $(document).ready(function () {
-        var table = '<table class="table table-striped">';
-        table += '<tr class="tab-scheme">';
-        var flag = 0;
-        $.each(attribTable[0], function (index, value) {
-            table += '<th>' + index + '</th>';
-        });
-        table += '</tr>';
-        $.each(attribTable, function (index, value) {
-            table += '<tr>';
-            $.each(value, function (index2, value2) {
-                table += '<td>' + value2 + '</td>';
-            });
-            table += '<tr>';
-        });
-        table += '</table>';
-        $(document.getElementById("attribTable")).html(table);
-    });
-}
-
 
 
 
