@@ -38,7 +38,7 @@
 #btnExport {
     position: absolute;
     right: 20px;
-    top: 600px;   
+    bottom: 100px;   
 }
 
 #showLayer {

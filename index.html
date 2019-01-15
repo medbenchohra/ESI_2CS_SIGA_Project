@@ -62,8 +62,8 @@
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
+        <div id="page-content-wrapper" style="">
+            <div id="sub-page-content-wrapper" class="container-fluid" style="">
 
 				<div id="map-wrapper" class="">
 					<div id="map" class="map"></div>
@@ -146,6 +146,17 @@
 			$("#wrapper").toggleClass("toggled");
 		});
 	</script>
+
+	<!-- Window Resize Script -->
+    <script>
+		$(window).resize(function(){
+			h = window.innerHeight;
+			h = h - 100;
+			$(document.getElementById("page-content-wrapper")).style.height = h + "px";
+			$(document.getElementsByClassName("ol-unselectable")).style.height = h + "px";
+		});
+	</script>
+
 	
 </div>
 
