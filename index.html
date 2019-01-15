@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
 	<title>SIGA Project</title>
-	
+
     <link type="text/css" rel="stylesheet" href="./css/ol3-wfs-t-main.css"/>
 	<link type="text/css" rel="stylesheet" href="./css/ol3-wfs-t-button-material.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.18.2/ol.css">
@@ -40,7 +40,7 @@
 				<div id="map-wrapper" class="">
 
 					<div id="map" class="map"></div>
-					
+
 					<div id="buttons">
 						<button title="Draw a point" id="btnPoint" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--accent">
 							<i class="material-icons">add_location</i>
@@ -73,7 +73,7 @@
 								<i class="material-icons"></i>
 						</button>
 					</div>
-				
+
 					<div id="showLayer">
 						<strong>  Filters : </strong><br>
 						<input id="layer0" type="checkbox" name="point layer" value="Point"> Points<br>
@@ -82,7 +82,6 @@
 					</div>
 
 					<div style="font-weight: bold; margin-bottom: 15px;" id="coords"></div>
-				
 				</div>
 
 				<div style="position: absolute; bottom: 0px; left: 50px;" >
@@ -94,7 +93,7 @@
 
     </div>
 	<!-- /#wrapper -->
-	
+
 	<!-- Insert this line above script imports  -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
@@ -135,7 +134,7 @@
 		resizeWindow();
 
 		function resizeWindow() {
-			
+
 			// if the sideBar is visible we retract it's size, else we add it
 			if (sideBarToggleCounter%2 == 1) w = (window.innerWidth - 300) + "px";
 			else w = window.innerWidth + "px";
