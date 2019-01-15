@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body onresize="resizeWindow()">
 
     <div id="wrapper">
 
@@ -62,10 +62,10 @@
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
-        <div id="page-content-wrapper" style="">
-            <div id="sub-page-content-wrapper" class="container-fluid" style="">
-
+        <div id="page-content-wrapper" onresize="resizeWindow()">
+            <div id="sub-page-content-wrapper" class="container-fluid">
 				<div id="map-wrapper" class="">
+
 					<div id="map" class="map"></div>
 					
 					<div id="buttons">
@@ -116,7 +116,9 @@
 				
 				</div>
 
-                <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
+				<div style="position: absolute; bottom: 0px; left: 50px;" >
+					<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
+				</div>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
@@ -141,23 +143,44 @@
 
 	<!-- Menu Toggle Script -->
     <script>
+		sideBarToggleCounter = 0;
 		$("#menu-toggle").click(function(e) {
 			e.preventDefault();
 			$("#wrapper").toggleClass("toggled");
+			sideBarToggleCounter++;
 		});
 	</script>
 
 	<!-- Window Resize Script -->
     <script>
-		$(window).resize(function(){
-			h = window.innerHeight;
-			h = h - 100;
-			$(document.getElementById("page-content-wrapper")).style.height = h + "px";
-			$(document.getElementsByClassName("ol-unselectable")).style.height = h + "px";
-		});
+		document.getElementById("page-content-wrapper").style.height = "100%";
+		document.getElementById("sub-page-content-wrapper").style.height = "100%";
+		document.getElementById("map-wrapper").style.height = "100%";
+
+		document.getElementById("sub-page-content-wrapper").style.width = "100%";
+		document.getElementById("map-wrapper").style.width = "100%";
+
+		resizeWindow();
+
+
+		function resizeWindow() {
+			
+			// if the sideBar is visible we retract it's size, else we add it
+			if (sideBarToggleCounter%2 == 1) w = (window.innerWidth - 250) + "px";
+			else w = window.innerWidth + "px";
+			document.getElementById("map").style.width = w;
+
+			h = (window.innerHeight - 50) + "px";
+			document.getElementById("page-content-wrapper").style.height = h;
+			document.getElementById("sub-page-content-wrapper").style.height = h;
+			document.getElementById("map-wrapper").style.height = h;
+			document.getElementById("map").style.height = h;
+
+			if (sideBarToggleCounter > 100)
+						sideBarToggleCounter =- 100;
+		}
 	</script>
 
-	
 </div>
 
 </body>

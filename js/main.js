@@ -180,7 +180,8 @@ function createMap(link, w, h) {
             title: 'Naming',
             label: 'Please enter the name of the shape :',
             value: 'City, District or Road',
-            inputAttrs: {type: 'url'}
+            inputAttrs: {type: 'url'},
+            height: 200
         }).then((r) => {
             if (r === null) {
                 console.log('user cancelled');
@@ -676,3 +677,4 @@ App.init = function () {
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
 }();
+
