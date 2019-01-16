@@ -1,4 +1,4 @@
-var id = 0;
+var featureId = 0;
 
 var dialogs = require('dialogs')();
 
@@ -38,7 +38,9 @@ var layerWFS = new ol.layer.Vector({
     source: sourceWFS
 });
 
-
+function sleep(time) {
+    return new Promise((resolve)=>setTimeout(resolve,time));
+}
 
 function createMap(link, w, h) {
 
@@ -190,11 +192,16 @@ function createMap(link, w, h) {
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
                         dialogs.prompt('Enter a name for the drawn shape', function(input) {
-                            addFeatureToAttribTable(id, e.feature, input);
-                            id++;
+                            addFeatureToAttribTable(e.feature, input);
+                            console.log("1", sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId());
                             transactWFS('insert', e.feature);
+                            sleep(2000).then(()=>{
+                                console.log("2", sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId());
+                            });
                         });
                     });
+                    
+                    //console.log("4", sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId());
                     break;
 
                 case 'btnLine':
@@ -205,8 +212,7 @@ function createMap(link, w, h) {
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
                         dialogs.prompt('Enter a name for the drawn shape', function(input) {
-                            addFeatureToAttribTable(id, e.feature, input);
-                            id++;
+                            addFeatureToAttribTable(e.feature, input);
                             transactWFS('insert', e.feature);
                         });
                     });
@@ -229,8 +235,7 @@ function createMap(link, w, h) {
                         }
                         if (!intersect) {
                             dialogs.prompt('Enter a name for the drawn shape', function(input) {
-                                addFeatureToAttribTable(id, e.feature, input);
-                                id++;
+                                addFeatureToAttribTable(e.feature, input);
                                 transactWFS('insert', e.feature);
                             });
                         }
@@ -245,6 +250,8 @@ function createMap(link, w, h) {
                 case 'btnDelete':
                     interaction = new ol.interaction.Select();
                     interaction.getFeatures().on('add', function (e) {
+                        aaaa = e;
+                        deleteFeatureFromAttribTable(e.feature.getId());
                         transactWFS('delete', e.target.item(0));
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
@@ -258,6 +265,8 @@ function createMap(link, w, h) {
                     var features = layerWFS.getSource().getFeatures();
                     features.forEach((feature) => interaction.getFeatures().push(feature));
                     interaction.getFeatures().on('add', function () {
+                        attributesTable = [];
+                        renderAttribTable();
                         for (var i = 0; i < features.length; i++) transactWFS('delete', features[i]);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
@@ -493,78 +502,112 @@ function Measurement(feature) {
     if (feature != null) {
         switch (feature.getGeometry().getType()) {
             case'Polygon':
-                //return feature.getGeometry().getArea();
-                return calculateArea(feature)*(getScale()/1000)*(getScale()/1000);
-                break;
+                if (getScale()=== 0) {
+                    return calculateArea(feature);
+                } else {
+                    return calculateArea(feature)*getScale()*getScale()/1000/1000;
+                }
+
             case   'LineString':
-                return feature.getGeometry().getLength()*getScale()/1000;
-                break;
+                if (getScale()=== 0) {
+                    return feature.getGeometry().getLength();
+                } else {
+                    return feature.getGeometry().getLength()*getScale()*getScale()/1000/1000;
+                }
             default:
                 return null;
         }
     }
 }
 
-function createEmptyAttribTable() {
-    attribTable[0] = {
-        'id': '',
-        'name': '',
-        'area (Km²)': '',
-        'distance (Km)': ''
-    };
 
-    $(document).ready(function () {
-        var table = '<table id="attrib_table" class="table table-striped">';
-        table += '<tbody id="tab-body">';
-        table += '<tr class="tab-scheme">';
-        var flag = 0;
-        $.each(attribTable[0], function (index, value) {
-            table += '<th>' + index + '</th>';
-        });
-        table += '</tr>';
-        table += '</tbody>';
-        table += '</table>';
-        $(document.getElementById("attribTable")).html(table);
-    });
+var attributesTable = [];
 
-}
 
-function saveCurrentSessionAttribTable() {
-    var table = document.getElementById("tab-body").innerHTML;
-}
+function addFeatureToAttribTable(feature, name) {
+    if (name.length === 0)
+            name = '-';
 
-function loadPreviousSessionAttribTable() {
-
-}
-
-function addFeatureToAttribTable(id, feature, name) {
-    var table = document.getElementById("tab-body").innerHTML
-    featureType = feature.getGeometry().getType();
-
-    table += '<tr>';
-    table += '<td>' + id + '</td>';
-    table += '<td>' + name + '</td>';
-
-    switch (featureType) {
+    switch (feature.getGeometry().getType()) {
         case 'Polygon':
-            table += '<td>' + Math.floor(Measurement(feature)) + '</td>';
-            table += '<td>' + "-" + '</td>';
+            attributesTable[attributesTable.length] = {
+                'id': '',
+                'name': name,
+                'area': Math.abs(Math.floor(Measurement(feature))),
+                'distance': '-' 
+            };
             break;
 
         case 'LineString':
-            table += '<td>' + "-" + '</td>';
-            table += '<td>' + Math.floor(Measurement(feature)) + '</td>';
+            attributesTable[attributesTable.length] = {
+                'id': '',
+                'name': name,
+                'area': '-',
+                'distance': Math.floor(Measurement(feature)) 
+            };
             break;
 
         case 'Point':
-            table += '<td>' + "-" + '</td>';
-            table += '<td>' + "-" + '</td>';
+            attributesTable[attributesTable.length] = {
+                'id': '',
+                'name': name,
+                'area': '-',
+                'distance': '-'
+            };
             break;
     }
 
-    table += '<tr>';
+    renderAttribTable();
+} 
 
-    document.getElementById("tab-body").innerHTML = table;
+
+function addFeatureIdToAttribTable() {
+    featureId = sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId();
+    attributesTable[attributesTable.length - 1].id = featureId;
+}
+
+
+function deleteFeatureFromAttribTable(id) {
+    for (i=0 ; i<attributesTable.length ; i++) {
+        if (attributesTable[i].getId === id) {
+            attributesTable[i] = attributesTable.pop();
+            break;
+        }
+    }
+
+    renderAttribTable();
+}
+
+
+function renderAttribTable() {
+
+    $(document).ready(function () {
+        var table = '<table id="attrib_table" class="table">';
+        table += '<tbody id="tab-body">';
+        table += '<tr class="tab-scheme">';
+        table += '<th>#</th>' + '<th>Name</th>';
+
+        if (getScale() === 0) {
+            table += '<th>Area (px²)</th>' + '<th>Distance (px)</th>';
+        } else {
+            table += '<th>Area (Km²)</th>' + '<th>Distance (Km)</th>';
+        }
+
+        table += '</tr>';
+
+        for (i=0 ; i<attributesTable.length ; i++) {
+            table += '<tr>';
+            table += '<td>' + i + '</td>';
+            table += '<td>' + attributesTable[i].name + '</td>';
+            table += '<td>' + attributesTable[i].area + '</td>';
+            table += '<td>' + attributesTable[i].distance + '</td>';
+        }
+        
+        table += '<tr>';
+        table += '</tbody>';
+        table += '</table>';
+        $(document.getElementById("attribTable")).html(table);
+    });  
 }
 
 
@@ -572,7 +615,7 @@ function addFeatureToAttribTable(id, feature, name) {
 //createMap('./data/djelfa.jpg', 2953, 2079);
 
 function getScale() {
-    return document.getElementById('inputScale').value;
+    return (0 | document.getElementById('inputScale').value);
 }
 
 
