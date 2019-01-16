@@ -278,9 +278,9 @@ function createMap(link, w, h) {
                                     var geomB = selected[1].getGeometry();
                                     intersection = polyIntersectsPoly(geomA, geomB);
                                     if (intersection === true) {
-                                        alert("There is intersection");
+                                        dialogs.alert("There is intersection");
                                     } else {
-                                        alert("There is no intersection");
+                                        dialogs.alert("There is no intersection");
                                     }
                                     selected = [];
                                 }
