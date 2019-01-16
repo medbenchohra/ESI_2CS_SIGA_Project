@@ -245,6 +245,7 @@ function createMap(link, w, h) {
                         transactWFS('delete', e.target.item(0));
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
+                        map.removeInteraction(interaction);
                     });
                     map.addInteraction(interaction);
                     break;
