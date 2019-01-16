@@ -270,7 +270,7 @@ function createMap(link, w, h) {
                 case 'btnOperations':
                     counter = 0;
                     var selected = [];
-                    map.on('click', function (e) {
+                    map.on('click', function f(e) {
                             var feat = map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
                                 //if feature is in the layer you want
                                 return feature;
@@ -287,6 +287,7 @@ function createMap(link, w, h) {
                                         dialogs.alert("There is no intersection");
                                     }
                                     selected = [];
+                                    map.removeEventListener('click', f);
                                 }
                             }
                         }
