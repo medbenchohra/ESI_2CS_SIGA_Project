@@ -9,6 +9,31 @@ body {
 	overflow: hidden; /* disable scroll */  
 }
 
+#attribTable {
+    font-family: 'Roboto', sans-serif, bold;
+    font-size: 11pt;
+    color: whitesmoke;
+    justify-content: center;
+    align-items: center;
+}
+
+th {
+    text-indent: 5px;
+    text-transform: capitalize;
+    color: whitesmoke;
+    font: bold;
+    background-color: #1B5E20;
+}
+
+tr {
+    text-align: center;
+    background-color: #43A047;
+}
+
+tr:hover {
+    background-color: rgba(137, 43, 226, 0.719);
+}
+
 #map-wrapper{
     height: 100%;
     width: 100%;

@@ -1,3 +1,7 @@
+var id = 0;
+
+var dialogs = require('dialogs')();
+
 var formatWFS = new ol.format.WFS();
 
 var formatGML = new ol.format.GML({
@@ -36,6 +40,9 @@ var layerWFS = new ol.layer.Vector({
 
 
 function createMap(link, w, h) {
+    check_the_checkbox("layer0");
+    check_the_checkbox("layer1");
+    check_the_checkbox("layer2");
     var interaction;
 
     var interactionSelectPointerMove = new ol.interaction.Select({
@@ -124,29 +131,9 @@ function createMap(link, w, h) {
         });
     };
 
-    function showSelectLayer() {
-        let features = sourceWFS.getFeatures();
-        for (let i = 0; i < features.length; i++) {
-            features[i].setStyle(new ol.style.Style({}));
-            let valuePoint = document.getElementById("layer0");
-            let valueLine = document.getElementById("layer1");
-            let valuePolygon = document.getElementById("layer2");
-            if ((features[i].getGeometry().getType() === valuePoint.getAttribute("value")) &&
-                valuePoint.checked) {
-                features[i].setStyle(null);
-            }
-            if ((features[i].getGeometry().getType() === valueLine.getAttribute("value")) &&
-                valueLine.checked) {
-                features[i].setStyle(null);
-            }
-            if ((features[i].getGeometry().getType() == valuePolygon.getAttribute("value")) && valuePolygon.checked) {
-                features[i].setStyle(null);
-            }
-        }
-
-    }
 
     $('#layer0').change(function () {
+        console.log("changed!!!");
         showSelectLayer();
     });
     $('#layer1').change(function () {
@@ -156,42 +143,7 @@ function createMap(link, w, h) {
         showSelectLayer();
     });
 
-    function askForShapeName(feature) {
-        const prompt = require('electron-prompt');
 
-        prompt({
-            title: 'Naming',
-            label: 'Please enter the name of the shape :',
-            value: 'City, District or Road',
-            inputAttrs: {type: 'url'}
-        }).then((r) => {
-            if (r === null) {
-                console.log('user cancelled');
-            } else {
-                feature.set('name', r);
-            }
-        }).catch(console.error);
-    }
-
-    function askForShapeStyle(feature) {
-        const prompt = require('electron-prompt');
-
-        prompt({
-            title: 'Naming',
-            label: 'Please enter the name of the shape :',
-            value: 'City, District or Road',
-            inputAttrs: {type: 'url'}
-        }).then((r) => {
-            if (r === null) {
-                console.log('user cancelled');
-            } else {
-                feature.set('name', r);
-            }
-        }).catch(console.error);
-    }
-    function deleteLast() {
-
-    }
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
             $(this).addClass('btn-active');
@@ -233,14 +185,13 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     map.addInteraction(interaction);
-                    console.log("test1");
                     interaction.on('drawend', function (e) {
-                        console.log("test2");
-                        askForShapeName(e.feature);
-                        transactWFS('insert', e.feature);
-                        map.removeInteraction(interaction);
+                        dialogs.prompt('Enter a name for the drawn shape', function(input) {
+                            addFeatureToAttribTable(id, e.feature, input);
+                            id++;
+                            transactWFS('insert', e.feature);
+                        });
                     });
-                    console.log("test3");
                     break;
 
                 case 'btnLine':
@@ -250,8 +201,11 @@ function createMap(link, w, h) {
                     });
                     map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        askForShapeName(e.feature);
-                        transactWFS('insert', e.feature);
+                        dialogs.prompt('Enter a name for the drawn shape', function(input) {
+                            addFeatureToAttribTable(id, e.feature, input);
+                            id++;
+                            transactWFS('insert', e.feature);
+                        });
                     });
                     break;
 
@@ -260,21 +214,29 @@ function createMap(link, w, h) {
                         type: 'Polygon',
                         source: layerWFS.getSource()
                     });
+
+                    map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
-                        askForShapeName(e.feature);
                         let intersect = false;
                         let i = 0;
                         while ((!intersect) && (i < sourceWFS.getFeatures().length)) {
-                            if (sourceWFS.getFeatures()[i].getGeometry().getType() === 'Polygon')
+                            if (sourceWFS.getFeatures()[i].getGeometry().getType() === 'Polygon') {
                                 intersect = polyIntersectsPoly(e.feature.getGeometry(), sourceWFS.getFeatures()[i].getGeometry());
+                            }
                             i++;
                         }
-                        if (!intersect) {transactWFS('insert', e.feature); }
-                        else e.feature.setStyle(new ol.style.Style({}));
-                        console.log("here I am stronger");
+                        if (!intersect) {
+                            dialogs.prompt('Enter a name for the drawn shape', function(input) {
+                                addFeatureToAttribTable(id, e.feature, input);
+                                id++;
+                                transactWFS('insert', e.feature);
+                            });
+                        }
+                        else
+                            e.feature.setStyle(new ol.style.Style({}));
+
                         map.updateSize();
                     });
-                    map.addInteraction(interaction);
                     break;
 
                 case 'btnDelete':
@@ -311,7 +273,7 @@ function createMap(link, w, h) {
                             });
                             if (feat != null) {
                                 selected.push(feat);
-                                if (feat.getGeometry().getType() === 'Polygon' && selected.length === 2) {
+                                if (selected.length === 2) {
                                     var geomA = selected[0].getGeometry();
                                     var geomB = selected[1].getGeometry();
                                     intersection = polyIntersectsPoly(geomA, geomB);
@@ -362,7 +324,7 @@ function createMap(link, w, h) {
             }
         }
     );
-    
+
     var style_LineString = function () {
         let features = sourceWFS.getFeatures();
         features.forEach((feature) => {
@@ -403,6 +365,7 @@ function createMap(link, w, h) {
             }
         }
     };
+
     var style_polygons = function () {
         let features = sourceWFS.getFeatures();
         counter = 0;
@@ -441,34 +404,7 @@ function createMap(link, w, h) {
 
         return colors;
     };
-    // var build_colors4 = function (start, end, n) {
-    //
-    //     //Distance between each color
-    //     a = (end[0] - start[0]);
-    //     if (a < 0) a = -a;
-    //     b = (end[1] - start[1]);
-    //     if (b < 0) b = -b;
-    //     c = (end[2] - start[2]);
-    //     if (c < 0) c = -c;
-    //     d = (end[3] - start[3]);
-    //     if (d < 0) d = -d;
-    //     d = 0;
-    //     var steps = [a / n, b / n, c / n, d / n];
-    //
-    //     //Build array of colors
-    //     var colors = [start];
-    //     for (var ii = 0; ii < n - 1; ++ii) {
-    //         colors.push([
-    //             Math.floor(colors[ii][0] + steps[0]),
-    //             Math.floor(colors[ii][1] + steps[1]),
-    //             Math.floor(colors[ii][2] + steps[2]),
-    //             Math.floor(colors[ii][3] + steps[3])
-    //         ]);
-    //     }
-    //     colors.push(end);
-    //
-    //     return colors;
-    // };
+
 
     function polyIntersectsPoly(polygeomA, polygeomB) {
         var jsts = require('jsts');
@@ -498,6 +434,36 @@ function createMap(link, w, h) {
 
     map.addControl(mouse_position);
 
+    map.on('pointermove', function () {
+        showSelectLayer();
+    });
+
+}
+
+let check_the_checkbox = function (id) {
+    document.getElementById(id).checked = true;
+};
+
+function showSelectLayer() {
+    let features = sourceWFS.getFeatures();
+    for (let i = 0; i < features.length; i++) {
+        features[i].setStyle(new ol.style.Style({}));
+        let valuePoint = document.getElementById("layer0");
+        let valueLine = document.getElementById("layer1");
+        let valuePolygon = document.getElementById("layer2");
+        if ((features[i].getGeometry().getType() === valuePoint.getAttribute("value")) &&
+            valuePoint.checked) {
+            features[i].setStyle(null);
+        }
+        if ((features[i].getGeometry().getType() === valueLine.getAttribute("value")) &&
+            valueLine.checked) {
+            features[i].setStyle(null);
+        }
+        if ((features[i].getGeometry().getType() == valuePolygon.getAttribute("value")) && valuePolygon.checked) {
+            features[i].setStyle(null);
+        }
+    }
+
 }
 
 function Measurement(feature) {
@@ -515,79 +481,71 @@ function Measurement(feature) {
     }
 }
 
-function showAttribTable() {
-    $(document.getElementById("attribTable")).show()
-}
+function createEmptyAttribTable() {
+    attribTable[0] = {
+        'id': '',
+        'name': '',
+        'area': '',
+        'distance': ''
+    };
 
-function hideAttribTable() {
-    $(document.getElementById("attribTable")).hide()
-}
-
-function renderAttribTable(attribTable) {
     $(document).ready(function () {
-        var table = '<table class="table table-striped">';
-        table += '<tr>';
+        var table = '<table id="attrib_table" class="table table-striped">';
+        table += '<tbody id="tab-body">';
+        table += '<tr class="tab-scheme">';
         var flag = 0;
         $.each(attribTable[0], function (index, value) {
             table += '<th>' + index + '</th>';
         });
         table += '</tr>';
-        $.each(attribTable, function (index, value) {
-            table += '<tr>';
-            $.each(value, function (index2, value2) {
-                table += '<td>' + value2 + '</td>';
-            });
-            table += '<tr>';
-        });
+        table += '</tbody>';
         table += '</table>';
         $(document.getElementById("attribTable")).html(table);
+
+        console.log(document.getElementById("tab-body").innerHTML);
     });
-}
-
-function addFeatureToAttribTable(attribTable, feature) {
 
 }
 
-function createAttribTableFromFeatures(features) {
-    attribTable = [];
+function saveCurrentSessionAttribTable() {
+    var table = document.getElementById("tab-body").innerHTML;
+}
 
-    for (i = 0; i < features.length; i++) {
-        featureType = features[i].getGeometry().getType();
-        switch (featureType) {
-            case 'Polygon':
-                attribTable[i] = {
-                    'id': i,
-                    'name': features[i].get('name'),
-                    'area': Math.floor(Measurement(features[i])),
-                    'distance': '-'
-                };
-                break;
+function loadPreviousSessionAttribTable() {
 
-            case 'LineString':
-                attribTable[i] = {
-                    'id': i,
-                    'name': features[i].get('name'),
-                    'area': '-',
-                    'distance': Math.floor(Measurement(features[i]))
-                };
-                break;
+}
 
-            case 'Point':
-                attribTable[i] = {
-                    'id': i,
-                    'name': features[i].get('name'),
-                    'area': '-',
-                    'distance': '-'
-                };
-                break;
+function addFeatureToAttribTable(id, feature, name) {
+    var table = document.getElementById("tab-body").innerHTML
+    featureType = feature.getGeometry().getType();
 
-            default:
-                console.log("there is another Goe type ?", feature.getGeometry().getType());
-        }
+    table += '<tr>';
+    table += '<td>' + id + '</td>';
+    table += '<td>' + name + '</td>';
+
+    switch (featureType) {
+        case 'Polygon':
+            table += '<td>' + Math.floor(Measurement(feature)) + '</td>';
+            table += '<td>' + "-" + '</td>';
+            break;
+
+        case 'LineString':
+            table += '<td>' + "-" + '</td>';
+            table += '<td>' + Math.floor(Measurement(feature)) + '</td>';
+            break;
+
+        case 'Point':
+            table += '<td>' + "-" + '</td>';
+            table += '<td>' + "-" + '</td>';
+            break;
     }
 
-    return attribTable;
+    table += '<tr>';
+
+    document.getElementById("tab-body").innerHTML = table;
 }
+
+
 
 createMap('./data/Dz_Batna_map.png', 1280, 930);
 
@@ -602,6 +560,7 @@ var $$ = document.querySelector.bind(document);
 
 //APP
 var App = {};
+
 App.init = function () {
     //Init
     function handleFileSelect(evt) {
@@ -693,3 +652,4 @@ App.init = function () {
     // input change
     $$("input[type=file]").addEventListener("change", handleFileSelect);
 }();
+
