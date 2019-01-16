@@ -10,11 +10,10 @@ body {
 }
 
 #attribTable {
-    text-shadow: 2px 2px grey;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif, bold;
     font-size: 11pt;
-    color: whitesmoke;
-    background-color:#8699AA;
+    color: black;
+    background-color:#81C784;
     justify-content: center;
     align-items: center;
 }
@@ -24,7 +23,7 @@ th {
     text-transform: capitalize;
     color: whitesmoke;
     font: bold;
-    background-color: darkcyan;
+    background-color: #388E3C;
 }
 
 tr {
@@ -32,7 +31,7 @@ tr {
 }
 
 tr:hover {
-    background-color: darkolivegreen;
+    background-color: rgba(137, 43, 226, 0.719);
 }
 
 #map-wrapper{

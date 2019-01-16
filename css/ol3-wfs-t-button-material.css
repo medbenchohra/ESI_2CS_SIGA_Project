@@ -1,38 +1,38 @@
 #btnPoint {
     position: absolute;
     right: 20px;
-    top: 140px;
+    top: 80px;
 }
 
 #btnLine {
     position: absolute;
     right: 20px;
-    top: 200px;
+    top: 140px;
 }
 
 #btnArea {
     position: absolute;
     right: 20px;
-    top: 260px;
+    top: 200px;
 }
 
 #btnEdit {
     position: absolute;
     right: 20px;
-    top: 320px;
+    top: 260px;
 }
 
 #btnDelete {
 
     position: absolute;
     right: 20px;
-    top: 380px;
+    top: 320px;
 }
 
 #btnDeleteAll {
     position: absolute;
     right: 20px;
-    top: 440px;
+    top: 380px;
 }
 
 #btnExport {
@@ -49,19 +49,19 @@
 
 #btnOperations {
     position: absolute;
-    right: 140px;
+    right: 180px;
     top: 10px;
 }
 
 #btnSymbologie {
     position: absolute;
-    right: 200px;
+    right: 240px;
     top: 10px;
 }
 
 #btnSelect {
     position: absolute;
-    right: 260px;
+    right: 300px;
     top: 10px;
 }
 
@@ -70,7 +70,7 @@
 #showLayer {
     font-weight: bold;
     font-size: 14pt;
-    background-color: cadetblue;
+    background-color: #66BB6A;
     border-radius: 15px;
     padding: 10px 15px 15px 15px;
     position: absolute;
@@ -132,4 +132,12 @@
     left: 50px;
     right: 50px;
     z-index: 1;
+}
+
+.mdl-button {
+    background-color: blueviolet !important;
+}
+
+.ol-zoom-in, .ol-zoom-out {
+    background-color: blueviolet !important;
 }
