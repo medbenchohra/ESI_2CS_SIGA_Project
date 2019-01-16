@@ -608,6 +608,7 @@ function renderAttribTable() {
 
 function getScale() {
     scale = document.getElementById('inputScale').value;
+    console.log()
     if (scale.length === 0)
         return 0;
     return scale;
