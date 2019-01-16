@@ -464,11 +464,33 @@ function showSelectLayer() {
 
 }
 
+
+ /* From : https://www.mathopenref.com/coordpolygonarea2.html  */
+ /*------------------------------------------------------------*/
+function calculateArea(feature) {
+    var coords = feature.getGeometry().getCoordinates()[0];
+    var x = [];
+    var y = [];
+    coords.forEach((coord) => {
+        x.push(coord[0]);
+        y.push(coord[1]);
+    });
+    area = 0;         // Accumulates area in the loop
+    j = coords.length - 1;  // The last vertex is the 'previous' one to the first
+
+    for (i = 0; i < coords.length; i++) {
+        area = area + (x[j] + x[i]) * (y[j] - y[i]);
+        j = i;  //j is previous vertex to i
+    }
+    return area / 2;
+}
+
 function Measurement(feature) {
     if (feature != null) {
         switch (feature.getGeometry().getType()) {
             case'Polygon':
-                return feature.getGeometry().getArea();
+                //return feature.getGeometry().getArea();
+                return calculateArea(feature);
                 break;
             case   'LineString':
                 return feature.getGeometry().getLength();
@@ -545,7 +567,7 @@ function addFeatureToAttribTable(id, feature, name) {
 
 
 
-createMap('./data/Dz_Batna_map.png', 1280, 930);
+createMap('./data/djelfa.jpg', 2953, 2079);
 
 function getScale() {
     return document.getElementById('inputScale').value;
@@ -638,7 +660,7 @@ App.init = function () {
         sizeOf(img.path, function (err, dimensions) {
             try {
                 // createMap(img.path, dimensions.width, dimensions.height);
-                createMap('./data/Dz_Batna_map.png', 1280, 930);
+                createMap('./data/djelfa.jpg', 2953, 2079);
                 console.log(dimensions.height, dimensions.width);
             } catch (ex) {
                 console.log("image dimensions !!");
