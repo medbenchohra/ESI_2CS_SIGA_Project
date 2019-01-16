@@ -215,7 +215,6 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
 
-                    map.addInteraction(interaction);
                     interaction.on('drawend', function (e) {
                         let intersect = false;
                         let i = 0;
@@ -237,6 +236,7 @@ function createMap(link, w, h) {
 
                         map.updateSize();
                     });
+                    map.addInteraction(interaction);
                     break;
 
                 case 'btnDelete':
@@ -433,10 +433,6 @@ function createMap(link, w, h) {
     var radius = 5000;//the distance of the buffer
 
     map.addControl(mouse_position);
-
-    map.on('pointermove', function () {
-        showSelectLayer();
-    });
 
 }
 
