@@ -189,7 +189,9 @@ function createMap(link, w, h) {
             }
         }).catch(console.error);
     }
+    function deleteLast() {
 
+    }
     $('button').click(function () {
             $(this).siblings().removeClass('btn-active');
             $(this).addClass('btn-active');
@@ -231,10 +233,14 @@ function createMap(link, w, h) {
                         source: layerWFS.getSource()
                     });
                     map.addInteraction(interaction);
+                    console.log("test1");
                     interaction.on('drawend', function (e) {
+                        console.log("test2");
                         askForShapeName(e.feature);
                         transactWFS('insert', e.feature);
+                        map.removeInteraction(interaction);
                     });
+                    console.log("test3");
                     break;
 
                 case 'btnLine':
@@ -256,7 +262,17 @@ function createMap(link, w, h) {
                     });
                     interaction.on('drawend', function (e) {
                         askForShapeName(e.feature);
-                        transactWFS('insert', e.feature);
+                        let intersect = false;
+                        let i = 0;
+                        while ((!intersect) && (i < sourceWFS.getFeatures().length)) {
+                            if (sourceWFS.getFeatures()[i].getGeometry().getType() === 'Polygon')
+                                intersect = polyIntersectsPoly(e.feature.getGeometry(), sourceWFS.getFeatures()[i].getGeometry());
+                            i++;
+                        }
+                        if (!intersect) {transactWFS('insert', e.feature); }
+                        else e.feature.setStyle(new ol.style.Style({}));
+                        console.log("here I am stronger");
+                        map.updateSize();
                     });
                     map.addInteraction(interaction);
                     break;
@@ -282,6 +298,7 @@ function createMap(link, w, h) {
                         sourceWFS.clear();
                     });
                     map.addInteraction(interaction);
+
                     break;
 
                 case 'btnOperations':
