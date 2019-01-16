@@ -26,73 +26,114 @@
 
 <body onresize="resizeWindow()">
 
-    <div id="wrapper">
+	<div class="plex-display">
+		<div id="upload-img" class="upload" style="margin-top: 100px;">
+			<div class="upload-files">
+				<header>
+					<p>
+						<i class="fa fa-cloud-upload" aria-hidden="true"></i>
+						<span class="up">up</span>
+						<span class="load">load</span>
+						<span class="load"></span>
+						<span class="load">your image to start</span>
+					</p>
+				</header>
+				<div class="body" id="drop">
+					<i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
+					<p class="pointer-none"><b>Drag and drop</b> files here <br/> or <a href="" id="triggerFile">browse</a>
+						to begin
+						the upload</p>
+					<input type="file" multiple="multiple"/>
+				</div>
+				<footer>
+					<div class="divider">
+						<span>
+							<AR> SELECTED IMAGES :</AR>
+						</span>
+					</div>
+					<div class="list-files">
+						<!--   template   -->
+					</div>
+					<button class="importar"> Start</button>
+					<div class="plex-display">
+						<div>Enter the scale :  </div> 
+						<input id="inputScale" class="input" placeholder="1 pixel  ==  ? m" type="number">
+					</div>
+				</footer>
+			</div>
+		</div>
+	</div>
 
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-			<div id="attribTable"></div>
-        </div>
-        <!-- /#sidebar-wrapper -->
+	<div id="map-wrapper" class="hidden">
+		<div id="wrapper">
 
-        <!-- Page Content -->
-        <div id="page-content-wrapper" onresize="resizeWindow()">
-            <div id="sub-page-content-wrapper" class="container-fluid">
-				<div id="map-wrapper" class="">
+			<!-- Sidebar -->
+			<div id="sidebar-wrapper">
+				<div id="attribTable"></div>
+			</div>
+			<!-- /#sidebar-wrapper -->
 
-					<div id="map" class="map"></div>
+			<!-- Page Content -->
+			<div id="page-content-wrapper" onresize="resizeWindow()">
+				<div id="sub-page-content-wrapper" class="container-fluid">
+					<div id="map-wrapper" class="">
 
-					<div id="buttons">
-						<button title="Draw a point" id="btnPoint" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--accent">
-							<i class="material-icons">add_location</i>
-						</button>
-						<button title="Draw a line" id="btnLine" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">timeline</i>
-						</button>
-						<button title="Draw an area" id="btnArea" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">signal_cellular_null</i>
-						</button>
-						<button title="Edit a shape" id="btnEdit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">build</i>
-						</button>
-						<button title="Delete a shape" id="btnDelete" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">delete</i>
-						</button>
-						<button title="Delete all shapes (click on a shape to initiate deletion)" id="btnDeleteAll" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">delete_forever</i>
-						</button>
-						<button title="Intersect" id="btnOperations" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">layers</i>
-						</button>
-						<button title="Symbology" id="btnSymbologie" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
-							<i class="material-icons">color_lens</i>
-						</button>
-						<button title="Selection tool" id="btnSelect" class="mdl-button mdl-js-button mdl-button--fab  mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
-								<i class="material-icons">done</i>
-						</button>
-						<button title="Export" id="btnExport" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
-								<i class="material-icons">file_download</i>
-						</button>
+						<div id="map" class="map"></div>
+
+						<div id="buttons">
+							<button title="Draw a point" id="btnPoint" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--accent">
+								<i class="material-icons">add_location</i>
+							</button>
+							<button title="Draw a line" id="btnLine" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">timeline</i>
+							</button>
+							<button title="Draw an area" id="btnArea" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">signal_cellular_null</i>
+							</button>
+							<button title="Edit a shape" id="btnEdit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">build</i>
+							</button>
+							<button title="Delete a shape" id="btnDelete" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">delete</i>
+							</button>
+							<button title="Delete all shapes (click on a shape to initiate deletion)" id="btnDeleteAll" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">delete_forever</i>
+							</button>
+							<button title="Intersect" id="btnOperations" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">layers</i>
+							</button>
+							<button title="Symbology" id="btnSymbologie" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
+								<i class="material-icons">color_lens</i>
+							</button>
+							<button title="Selection tool" id="btnSelect" class="mdl-button mdl-js-button mdl-button--fab  mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
+									<i class="material-icons">done</i>
+							</button>
+							<button title="Export" id="btnExport" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--mini-fab mdl-button--colored">
+									<i class="material-icons">file_download</i>
+							</button>
+						</div>
+
+						<div id="showLayer">
+							<strong>  Filters : </strong><br>
+							<input id="layer0" type="checkbox" name="point layer" value="Point"> Points<br>
+							<input id="layer1" type="checkbox" name="line layer" value="LineString"> Roads<br>
+							<input id="layer2" type="checkbox" name="polygon layer" value="Polygon"> Areas<br>
+						</div>
+
+						<div style="font-weight: bold; margin-bottom: 15px;" id="coords"></div>
 					</div>
 
-					<div id="showLayer">
-						<strong>  Filters : </strong><br>
-						<input id="layer0" type="checkbox" name="point layer" value="Point"> Points<br>
-						<input id="layer1" type="checkbox" name="line layer" value="LineString"> Roads<br>
-						<input id="layer2" type="checkbox" name="polygon layer" value="Polygon"> Areas<br>
+					<div style="position: absolute; bottom: 0px; left: 50px;" >
+						<a style=" background-color: blueviolet !important;" href="#menu-toggle" class="btn btn-secondary" id="menu-toggle"><strong>Attributes Table</strong></a>
 					</div>
-
-					<div style="font-weight: bold; margin-bottom: 15px;" id="coords"></div>
 				</div>
+			</div>
+			<!-- /#page-content-wrapper -->
 
-				<div style="position: absolute; bottom: 0px; left: 50px;" >
-					<a style=" background-color: blueviolet !important;" href="#menu-toggle" class="btn btn-secondary" id="menu-toggle"><strong>Attributes Table</strong></a>
-				</div>
-            </div>
-        </div>
-        <!-- /#page-content-wrapper -->
+		</div>
+		<!-- /#wrapper -->
 
-    </div>
-	<!-- /#wrapper -->
+	</div>
 
 	<!-- Insert this line above script imports  -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -136,7 +177,7 @@
 		function resizeWindow() {
 
 			// if the sideBar is visible we retract it's size, else we add it
-			if (sideBarToggleCounter%2 == 1) w = (window.innerWidth - 300) + "px";
+			if (sideBarToggleCounter%2 == 1) w = (window.innerWidth - 350) + "px";
 			else w = window.innerWidth + "px";
 			document.getElementById("map").style.width = w;
 

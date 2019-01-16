@@ -39,10 +39,13 @@ var layerWFS = new ol.layer.Vector({
 });
 
 
+
 function createMap(link, w, h) {
+
     check_the_checkbox("layer0");
     check_the_checkbox("layer1");
     check_the_checkbox("layer2");
+
     var interaction;
 
     var interactionSelectPointerMove = new ol.interaction.Select({
@@ -490,10 +493,10 @@ function Measurement(feature) {
         switch (feature.getGeometry().getType()) {
             case'Polygon':
                 //return feature.getGeometry().getArea();
-                return calculateArea(feature);
+                return calculateArea(feature)*(getScale()/1000)*(getScale()/1000);
                 break;
             case   'LineString':
-                return feature.getGeometry().getLength();
+                return feature.getGeometry().getLength()*getScale()/1000;
                 break;
             default:
                 return null;
@@ -505,8 +508,8 @@ function createEmptyAttribTable() {
     attribTable[0] = {
         'id': '',
         'name': '',
-        'area': '',
-        'distance': ''
+        'area (Km²)': '',
+        'distance (Km)': ''
     };
 
     $(document).ready(function () {
@@ -521,8 +524,6 @@ function createEmptyAttribTable() {
         table += '</tbody>';
         table += '</table>';
         $(document.getElementById("attribTable")).html(table);
-
-        console.log(document.getElementById("tab-body").innerHTML);
     });
 
 }
@@ -567,7 +568,7 @@ function addFeatureToAttribTable(id, feature, name) {
 
 
 
-createMap('./data/djelfa.jpg', 2953, 2079);
+//createMap('./data/djelfa.jpg', 2953, 2079);
 
 function getScale() {
     return document.getElementById('inputScale').value;
@@ -659,8 +660,8 @@ App.init = function () {
         var sizeOf = require('image-size');
         sizeOf(img.path, function (err, dimensions) {
             try {
-                // createMap(img.path, dimensions.width, dimensions.height);
-                createMap('./data/djelfa.jpg', 2953, 2079);
+                createMap(img.path, dimensions.width, dimensions.height);
+                //createMap('./data/djelfa.jpg', 2953, 2079);
                 console.log(dimensions.height, dimensions.width);
             } catch (ex) {
                 console.log("image dimensions !!");

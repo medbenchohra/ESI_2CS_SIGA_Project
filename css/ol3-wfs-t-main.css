@@ -40,11 +40,16 @@ tr:hover {
 }
 
 body {
-    font-family: 'Roboto', sans-serif;/*
-    background: linear-gradient(to top, #4F6072, #8699AA);
-    display: flex;*/
+    font-family: 'Roboto', sans-serif;
     justify-content: center;
     align-items: center;
+}
+
+.plex-display {
+    font-family: 'Roboto', sans-serif;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .upload {
