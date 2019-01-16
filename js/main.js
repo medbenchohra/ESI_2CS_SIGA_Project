@@ -193,15 +193,9 @@ function createMap(link, w, h) {
                     interaction.on('drawend', function (e) {
                         dialogs.prompt('Enter a name for the drawn shape', function(input) {
                             addFeatureToAttribTable(e.feature, input);
-                            console.log("1", sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId());
                             transactWFS('insert', e.feature);
-                            sleep(2000).then(()=>{
-                                console.log("2", sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId());
-                            });
                         });
                     });
-                    
-                    //console.log("4", sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId());
                     break;
 
                 case 'btnLine':
@@ -250,8 +244,6 @@ function createMap(link, w, h) {
                 case 'btnDelete':
                     interaction = new ol.interaction.Select();
                     interaction.getFeatures().on('add', function (e) {
-                        aaaa = e;
-                        deleteFeatureFromAttribTable(e.feature.getId());
                         transactWFS('delete', e.target.item(0));
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
