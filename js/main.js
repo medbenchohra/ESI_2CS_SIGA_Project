@@ -504,7 +504,7 @@ function Measurement(feature) {
                 if (getScale()=== 0) {
                     return feature.getGeometry().getLength();
                 } else {
-                    return feature.getGeometry().getLength()*getScale()*getScale()/1000/1000;
+                    return feature.getGeometry().getLength()*getScale()/1000;
                 }
             default:
                 return null;
