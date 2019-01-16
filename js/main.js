@@ -314,6 +314,7 @@ function createMap(link, w, h) {
                     break;
 
                 case 'btnSelect':
+                    map.on('click', function (e) {});
                     break;
 
                 case 'btnExport':
