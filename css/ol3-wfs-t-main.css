@@ -12,8 +12,7 @@ body {
 #attribTable {
     font-family: 'Roboto', sans-serif, bold;
     font-size: 11pt;
-    color: black;
-    background-color:#81C784;
+    color: whitesmoke;
     justify-content: center;
     align-items: center;
 }
@@ -23,11 +22,12 @@ th {
     text-transform: capitalize;
     color: whitesmoke;
     font: bold;
-    background-color: #388E3C;
+    background-color: #1B5E20;
 }
 
 tr {
     text-align: center;
+    background-color: #43A047;
 }
 
 tr:hover {
