@@ -607,7 +607,10 @@ function renderAttribTable() {
 //createMap('./data/djelfa.jpg', 2953, 2079);
 
 function getScale() {
-    return (0 | document.getElementById('inputScale').value);
+    scale = document.getElementById('inputScale').value;
+    if (scale.length === 0)
+        return 0;
+    return scale;
 }
 
 
