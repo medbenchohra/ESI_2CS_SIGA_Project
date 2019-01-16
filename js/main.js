@@ -560,11 +560,8 @@ function deleteFeatureFromAttribTable(indexofFeature) {
     let i=0;
     while (i<attributesTable.length){
         console.log("the id of "+i+" th element is: "+attributesTable[i].id);
-
-        if (attributesTable[i].id == indexofFeature) {
-            if (attributesTable.length == 1)
-                attributesTable.pop();
-            else
+        if (attributesTable.length == 1) attributesTable.pop();
+        else if (attributesTable[i].id == indexofFeature) {
                 attributesTable[i]=attributesTable.pop();
             break;
         }
