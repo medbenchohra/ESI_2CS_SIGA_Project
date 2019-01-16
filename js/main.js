@@ -244,6 +244,8 @@ function createMap(link, w, h) {
                 case 'btnDelete':
                     interaction = new ol.interaction.Select();
                     interaction.getFeatures().on('add', function (e) {
+                        aaaaa = e;
+                        deleteFeatureFromAttribTable(e.element.getGeometry().getCoordinates());
                         transactWFS('delete', e.target.item(0));
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
@@ -526,7 +528,8 @@ function addFeatureToAttribTable(feature, name) {
                 'id': '',
                 'name': name,
                 'area': Math.abs(Math.floor(Measurement(feature))),
-                'distance': '-' 
+                'distance': '-',
+                'coords': feature.getGeometry().getCoordinates()
             };
             break;
 
@@ -535,7 +538,8 @@ function addFeatureToAttribTable(feature, name) {
                 'id': '',
                 'name': name,
                 'area': '-',
-                'distance': Math.floor(Measurement(feature)) 
+                'distance': Math.floor(Measurement(feature)),
+                'coords': feature.getGeometry().getCoordinates()
             };
             break;
 
@@ -544,7 +548,8 @@ function addFeatureToAttribTable(feature, name) {
                 'id': '',
                 'name': name,
                 'area': '-',
-                'distance': '-'
+                'distance': '-',
+                'coords': feature.getGeometry().getCoordinates()
             };
             break;
     }
@@ -559,9 +564,10 @@ function addFeatureIdToAttribTable() {
 }
 
 
-function deleteFeatureFromAttribTable(id) {
+function deleteFeatureFromAttribTable(coords) {
     for (i=0 ; i<attributesTable.length ; i++) {
-        if (attributesTable[i].getId === id) {
+        if (attributesTable[i].coords === coords) {
+            console.log("found ir");
             attributesTable[i] = attributesTable.pop();
             break;
         }
