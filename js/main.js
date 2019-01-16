@@ -245,6 +245,10 @@ function createMap(link, w, h) {
                     interaction = new ol.interaction.Select();
                     interaction.getFeatures().on('add', function (e) {
                         transactWFS('delete', e.target.item(0));
+                        let featured = sourceWFS.getFeatures();
+                        let id = featured.indexOf(e.target.item(0));
+                        console.log("proceding to identify feature"+id);
+                        deleteFeatureFromAttribTable(id);
                         interactionSelectPointerMove.getFeatures().clear();
                         interaction.getFeatures().clear();
                         map.removeInteraction(interaction);
@@ -523,7 +527,7 @@ function addFeatureToAttribTable(feature, name) {
     switch (feature.getGeometry().getType()) {
         case 'Polygon':
             attributesTable[attributesTable.length] = {
-                'id': '',
+                'id': attributesTable.length,
                 'name': name,
                 'area': Math.abs(Math.floor(Measurement(feature))),
                 'distance': '-' 
@@ -532,7 +536,7 @@ function addFeatureToAttribTable(feature, name) {
 
         case 'LineString':
             attributesTable[attributesTable.length] = {
-                'id': '',
+                'id': attributesTable.length,
                 'name': name,
                 'area': '-',
                 'distance': Math.floor(Measurement(feature)) 
@@ -541,7 +545,7 @@ function addFeatureToAttribTable(feature, name) {
 
         case 'Point':
             attributesTable[attributesTable.length] = {
-                'id': '',
+                'id': attributesTable.length,
                 'name': name,
                 'area': '-',
                 'distance': '-'
@@ -550,8 +554,24 @@ function addFeatureToAttribTable(feature, name) {
     }
 
     renderAttribTable();
-} 
+}
 
+function deleteFeatureFromAttribTable(indexofFeature) {
+    let i=0;
+    while (i<attributesTable.length){
+        console.log("the id of "+i+" th element is: "+attributesTable[i].id);
+
+        if (attributesTable[i].id == indexofFeature) {
+            if (attributesTable.length == 1)
+                attributesTable.pop();
+            else
+                attributesTable[i]=attributesTable.pop();
+            break;
+        }
+        i++;
+    }
+    renderAttribTable();
+}
 
 function addFeatureIdToAttribTable() {
     featureId = sourceWFS.getFeatures()[sourceWFS.getFeatures().length - 1].getId();
@@ -559,7 +579,7 @@ function addFeatureIdToAttribTable() {
 }
 
 
-function deleteFeatureFromAttribTable(id) {
+/*function deleteFeatureFromAttribTable(id) {
     for (i=0 ; i<attributesTable.length ; i++) {
         if (attributesTable[i].getId === id) {
             attributesTable[i] = attributesTable.pop();
@@ -568,7 +588,7 @@ function deleteFeatureFromAttribTable(id) {
     }
 
     renderAttribTable();
-}
+}*/
 
 
 function renderAttribTable() {
