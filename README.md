@@ -3,7 +3,7 @@
 # Projet SIGA (Système d'Information Géographique Avancé):
 
 Implémentation de quelques modules « Outils SIG » : Création
- d’une application «Outils SIG» sans géo référencement,
+ d’une application sans géo référencement,
   uniquement avec des positions cartésiennes X et Y.
 
 
