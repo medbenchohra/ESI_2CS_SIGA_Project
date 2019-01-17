@@ -1,9 +1,8 @@
-# SIGA
-* ESI project 2018/2019
+# SIGA - ESI project 2018/2019
 
-# Projet SIGA(système d'information géographique avanvé):
+# Projet SIGA (Système d'Information Géographique Avancé):
 
-Implémentation de quelques modules « Outils SIG » Création
+Implémentation de quelques modules « Outils SIG » : Création
  d’une application «Outils SIG» sans géo référencement,
   uniquement avec des positions cartésiennes X et Y.
 
@@ -11,22 +10,24 @@ Implémentation de quelques modules « Outils SIG » Création
 # Features
 -----
 
-* Import your Card
-* Enter the scale
-* Draw shapes: Draw polygon, point, line
-* Delete any shape 
+* Import your map
+* Enter the scale (1 pixel  ===  ? meters)
+* Draw shapes: polygons, points, lines
+* Delete any shape
 * Delete all shapes
-* Symbology
+* Symbology (color the shapes)
 * Zoom
 * Operation (intersection)
 * Attribute table : automatic fill (for areas and distances)
-* Export the map
+* Export the map with the drawings
 
 # Demo
 -----
-<img width=600px src="demo/1.png" />
-<img width=600px src="demo/2.png" />
-<img width=600px src="demo/3.png" />
+
+<img width=600px src="demo/1.png" style="max-width:100%; margin-left: 17%" />
+<img width=600px src="demo/2.png" style="max-width:100%; margin-left: 17%" />
+<img width=600px src="demo/3.png" style="max-width:100%; margin-left: 17%" />
+
 
 # Usage
 -----
@@ -40,12 +41,15 @@ Implémentation de quelques modules « Outils SIG » Création
 ```
 # Authors
 -----
-* MohamedAmine Benchohra 
+* Mohamed Amine Benchohra 
 https://github.com/medbenchohra
+
 * Mahamdi Mohammed 
 https://github.com/MahamdiAmine
+
 * Adrao nassim 
 https://github.com/nassimesi 
+
 * Rahmoune Imene 
 https://github.com/mimene 
 
